@@ -40,6 +40,7 @@ function Stats() {
     });
 
     Promise.all(promises).then(()=>{
+      tempStocksData.sort(function(a, b){return b.c - a.c});  // Sort data based on price (API attribute 'c')
       console.log(tempStocksData);
       setStockData(tempStocksData);
     })
