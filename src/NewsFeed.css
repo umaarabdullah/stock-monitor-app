@@ -1,5 +1,26 @@
 .newsfeed {
-    border: 1px solid red;
     flex: 0.7;
     color: white
+}
+
+.newsfeed_chartSection {
+    display: flex;
+    flex-direction: column;
+}
+
+.newsfeed_portfolio {
+    text-align: left;
+}
+
+.newsfeed_portfolio h1 {
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+.newsfeed_portfolio p {
+    margin-top: 0;
+}
+
+.newsfeed_chart {
+    width: 100%;
 }
