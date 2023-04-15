@@ -4,8 +4,10 @@ import { Line } from "react-chartjs-2";
 import './LineGraph.css'
 
 const options = {
-  legend: {
-    display: false,
+  plugins: {
+    legend: {
+        display: false,
+    }
   },
   hover: {
     intersect: false
@@ -18,7 +20,7 @@ const options = {
       radius: 0,
     },
   },
-  maintainAspectRatio: false,
+  maintainAspectRatio: true,
   tooltips: {
     mode: "index",
     intersect: false,
@@ -26,47 +28,43 @@ const options = {
     },
   },
   scales: {
-    xAxes: [
-      {
-        type: "time",
-        time: {
-          format: "MM/DD/YY",
-          tooltipFormat: "ll",
-        },
-        ticks: {
-          display: false,
-        }
-      },
-    ],
-    yAxes: [
-      {
-        gridLines: {
-          display: false,
-        },
-        ticks: {
-          display: false,
-        },
-      },
-    ],
+    x: { 
+      ticks: {
+        display: false
+      }
+    },
+    y: { 
+      ticks: {
+        display: false
+      }
+    },
   },
-  
 };
 
+// const labels = ["January", "February", "March", "April", "May", "June"];
+
 function LineGraph({ casesType }) {
+
   const [data, setData] = useState({});
+  const [labels, setLabels] = useState({});
 
   useEffect(() => {
     
     let data = [];
+    let labels = [];
     let value = 50;
     for(var i = 0; i < 366; i++){
       let date = new Date();
       date.setHours(0,0,0,0);
       date.setDate(i);
       value += Math.round((Math.random() < 0.5 ? 1 : 0) * Math.random() * 10);
-      data.push({x: date, y: value});
-    }   
-    setData(data)
+      labels.push(date.toString());
+      data.push(value);
+    }
+    // data = [0, 10, 5, 2, 20, 30, 45];
+    setData(data);
+    setLabels(labels);
+
   }, []);
 
   return (
@@ -74,8 +72,10 @@ function LineGraph({ casesType }) {
       {data?.length > 0 && (
         <Line
           data={{
-            datasets: [
+            labels : labels,  // x-coordinates
+            datasets: [       // y-coordinates
               {
+                label : 'Chart',
                 type: 'line',
                 backgroundColor: "black",
                 borderColor: "#dde26a",
