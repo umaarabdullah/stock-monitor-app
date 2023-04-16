@@ -21,6 +21,10 @@ function NewsFeed() {
     "Pharma",
   ];
 
+  const handleClick = () => {
+    console.log('clicked');
+  };
+
   return (
     <div className='newsfeed'>
         <div className='newsfeed_container'>
@@ -52,9 +56,12 @@ function NewsFeed() {
           </div>
           <div className='newsfeed_popularlists_badges'>
             {popularTopics.map(tag => (
-              <Chip 
+              <Chip
+                variant="outlined"
+                style={{ borderColor:'#31363a',  color: 'white' }}
                 label={tag} 
-                key={tag} 
+                key={tag}
+                onClick={handleClick}
                 avatar={<Avatar src={`https://avatars.dicebear.com/api/human/${tag}.svg`} />} 
               />
             ))}

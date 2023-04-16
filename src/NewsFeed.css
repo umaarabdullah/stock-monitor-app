@@ -62,3 +62,8 @@
     align-items: center;
     padding: 20px 0px 20px 0px;
 }
+
+.newsfeed_popularlists_badges {
+    display: flex;
+    flex-wrap: wrap;
+}
