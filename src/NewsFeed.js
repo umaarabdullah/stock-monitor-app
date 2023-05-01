@@ -16,7 +16,6 @@ function NewsFeed() {
     "Cannabis",
     "Healthcare Supplies",
     "Index ETFs",
-    "Technology",
     "China",
     "Pharma",
   ];
