@@ -60,9 +60,6 @@ function Stats() {
 
   // API Call for stock candles i.e historical data (1Y (Each Day), Monthly, Weekly, Per minute (Live))
   const getHistoricalStockData = (stock) => {
-    console.log(januaryFirst);
-    console.log(currentDate);
-
     return axios
       .get(`${base_url}/stock/candle?symbol=${stock}&resolution=D&from=${januaryFirstTimestamp}&to=${currentTimestamp}&token=${token}`)   // resolution for daily intervalled candles and time from janurary first to current
       .catch((error) => {
@@ -113,7 +110,7 @@ function Stats() {
       )
     });
     Promise.all(historicalPromise).then(()=>{
-      console.log(tempHistoricalStockData);
+      // console.log(tempHistoricalStockData);
       setStockCandles(tempHistoricalStockData);
     });
 
