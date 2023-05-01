@@ -66,9 +66,9 @@ function StatsRow(props) {
   return (
     <div className="row" ref={dropDownRef} onClick={toggleDropdown}>
         {dropdownOpen && (
-          <div className="dropdown-content">
-            <a href="#" onClick={buyStock}>Buy</a>
-            <a href="#">View</a>
+          <div className="dropdown_content" aria-labelledby="dropdownMenuButton">
+            <a className="dropdown_item_buy" href="#" onClick={buyStock}>Buy</a>
+            <a className="dropdown_item_view" href="#">View</a>
           </div>
         )}
         <div className="row_intro">

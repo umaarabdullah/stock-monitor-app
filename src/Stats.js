@@ -58,7 +58,7 @@ function Stats() {
       });
   };
 
-  // API Call for 1 year of historical data and new updates
+  // API Call for stock candles i.e historical data (1Y (Each Day), Monthly, Weekly, Per minute (Live))
   const getHistoricalStockData = (stock) => {
     console.log(januaryFirst);
     console.log(currentDate);
@@ -94,11 +94,12 @@ function Stats() {
       )
     });
     Promise.all(promises).then(()=>{
-      tempStocksData.sort(function(a, b){return b.c - a.c});  // Sort data based on price (API attribute 'c')
+      tempStocksData.sort(function(a, b){return b.c - a.c});  // Sort data based on current price (API attribute 'c')
       // console.log(tempStocksData);
       setStockData(tempStocksData);
     });
 
+    // In this API call the attribute 'c' means closing price
     stocksList.map((stock) => {
       historicalPromise.push(
         getHistoricalStockData(stock)
@@ -115,7 +116,6 @@ function Stats() {
       console.log(tempHistoricalStockData);
       setStockCandles(tempHistoricalStockData);
     });
-
 
   }, []);
 
