@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import './StatsRow.css'
 import StockSVG from './stock.svg'
 import { db } from './firebase_db';
@@ -7,6 +7,30 @@ function StatsRow(props) {
 
   const percentage = ((props.price - props.openPrice)/props.openPrice) * 100;
   const isPositive = percentage >= 0;
+
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const dropDownRef = useRef(null);
+
+  useEffect(() => {
+
+    const handleClickOutside = (event) => {
+      if (dropDownRef.current && !dropDownRef.current.contains(event.target)) {
+        setDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+
+    // remove event listener when the component unmounts
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+
+  }, [dropDownRef]);
+
+  function toggleDropdown() {
+    setDropdownOpen(!dropdownOpen);
+  }
 
   const buyStock = () => {
     // cross-check with firestore database
@@ -40,7 +64,13 @@ function StatsRow(props) {
   };
 
   return (
-    <div className="row" onClick={buyStock}>
+    <div className="row" ref={dropDownRef} onClick={toggleDropdown}>
+        {dropdownOpen && (
+          <div className="dropdown_content" aria-labelledby="dropdownMenuButton">
+            <a className="dropdown_item_buy" href="#" onClick={buyStock}>Buy</a>
+            <a className="dropdown_item_view" href="#">View</a>
+          </div>
+        )}
         <div className="row_intro">
             <h1>{props.name}</h1>
             <p>{props.shares && 

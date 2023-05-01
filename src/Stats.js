@@ -7,6 +7,11 @@ import { db } from './firebase_db';
 const token = "cgrime9r01qs9ra1td0gcgrime9r01qs9ra1td10";
 const base_url = "https://finnhub.io/api/v1";
 
+const currentDate = new Date();
+const currentTimestamp = Math.floor(currentDate.getTime() / 1000);
+const januaryFirst = new Date(currentDate.getFullYear(), 0, 1);
+const januaryFirstTimestamp = Math.floor(januaryFirst.getTime() / 1000);
+
 function Stats() {
 
   const [stockData, setStockData] = useState([]);
@@ -53,14 +58,14 @@ function Stats() {
       });
   };
 
-  // API Call for 1 year of historical data and new updates
-  // const getHistoricalStockData = (stock) => {
-  //   return axios
-  //     .get(`${base_url}/stock/candle?symbol=${stock}&resolution=1&from=1679476980&to=1679649780&token=${token}`)
-  //     .catch((error) => {
-  //       console.error("Error", error.message);
-  //     });
-  // };
+  // API Call for stock candles i.e historical data (1Y (Each Day), Monthly, Weekly, Per minute (Live))
+  const getHistoricalStockData = (stock) => {
+    return axios
+      .get(`${base_url}/stock/candle?symbol=${stock}&resolution=D&from=${januaryFirstTimestamp}&to=${currentTimestamp}&token=${token}`)   // resolution for daily intervalled candles and time from janurary first to current
+      .catch((error) => {
+        console.error("Error", error.message);
+      });
+  };
   
   useEffect(() => {
 
@@ -69,6 +74,7 @@ function Stats() {
 
     const stocksList = ["AAPL", "MSFT", "TSLA", "META", "BABA", "UBER", "DIS", "SBUX", "AMZN", "NIO", "IBM"];
     let promises = [];
+    let historicalPromise = [];
 
     getMyStocks();
     
@@ -85,10 +91,28 @@ function Stats() {
       )
     });
     Promise.all(promises).then(()=>{
-      tempStocksData.sort(function(a, b){return b.c - a.c});  // Sort data based on price (API attribute 'c')
+      tempStocksData.sort(function(a, b){return b.c - a.c});  // Sort data based on current price (API attribute 'c')
       // console.log(tempStocksData);
       setStockData(tempStocksData);
-    })
+    });
+
+    // In this API call the attribute 'c' means closing price
+    stocksList.map((stock) => {
+      historicalPromise.push(
+        getHistoricalStockData(stock)
+        .then((res) => {
+          // console.log(res);
+          tempHistoricalStockData.push({
+            name: stock,
+            ...res.data
+          });
+        })
+      )
+    });
+    Promise.all(historicalPromise).then(()=>{
+      // console.log(tempHistoricalStockData);
+      setStockCandles(tempHistoricalStockData);
+    });
 
   }, []);
 
