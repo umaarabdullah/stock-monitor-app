@@ -6,6 +6,7 @@ import { db } from './firebase_db';
 function StatsRow(props) {
 
   const percentage = ((props.price - props.openPrice)/props.openPrice) * 100;
+  const isPositive = percentage >= 0;
 
   const buyStock = () => {
     // cross-check with firestore database
@@ -13,6 +14,7 @@ function StatsRow(props) {
     .where("ticker", "==", props.name)
     .get()
     .then((querySnapshot) => {
+
       if(querySnapshot.docs.length > 0){
         // Update existing record
         querySnapshot.forEach((doc) => {
@@ -32,6 +34,7 @@ function StatsRow(props) {
         })
         console.log("added in firestore db");
       }
+      
     })
 
   };
@@ -49,7 +52,7 @@ function StatsRow(props) {
         </div>
         <div className="row_numbers">
             <p className="row_price">{props.price}</p>
-            <p className="row_percentage"> {Number(percentage).toFixed(2)}%</p>
+            <p className="row_percentage" style={{ color: isPositive ? '#5AC53B' : 'red' }}> {Number(percentage).toFixed(2)}%</p>
         </div>
     </div>
   )
