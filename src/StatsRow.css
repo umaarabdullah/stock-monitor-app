@@ -19,6 +19,7 @@
 }
 
 .row_intro h1 {
+    margin-right: 5px;
     font-size: 16px;
     font-weight: bold;
     padding-bottom: 2px;
@@ -30,8 +31,9 @@
 }
 
 .row_numbers {
+    margin-left: 10px;
     text-align: right;
-    font-size: 12px;
+    font-size: 13px;
     font-weight: 500;
 }
 
@@ -39,25 +41,42 @@
     padding-bottom: 4px;
 }
 
-.dropdown_content a:first-of-type {
-    color: #5AC53B;
+button {
+    margin: 12px;
 }
 
-.dropdown_content a:hover {
+.button-37 {
+    background-color: #13aa52;
+    border: 1px solid #13aa52;
+    border-radius: 4px;
+    box-shadow: rgba(0, 0, 0, .1) 0 2px 4px 0;
+    box-sizing: border-box;
     color: #fff;
+    cursor: pointer;
+    font-family: "Akzidenz Grotesk BQ Medium", -apple-system, BlinkMacSystemFont, sans-serif;
+    font-size: 16px;
+    font-weight: bold;
+    outline: none;
+    outline: 0;
+    padding: 10px 25px;
+    text-align: center;
+    transform: translateY(0);
+    transition: transform 150ms, box-shadow 150ms;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
 }
 
-.dropdown_item_buy {
-    padding: 0.5rem 1rem;
-    text-decoration: none;
-    display: block;
+.button-37:hover {
+    box-shadow: rgba(0, 0, 0, .15) 0 3px 9px 0;
+    transform: translateY(-2px);
+    background-color: #0d7539;
 }
 
-.dropdown_item_view {
-    color: #5094dd;
-    padding: 0.5rem 1rem;
-    text-decoration: none;
-    display: block;
+@media (min-width: 768px) {
+    .button-37 {
+        padding: 10px 30px;
+    }
 }
 
 

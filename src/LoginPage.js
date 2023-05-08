@@ -2,6 +2,7 @@ import { useState } from "react";
 import firebase from "firebase/compat/app";
 import 'firebase/compat/auth';
 import './LoginPage.css'
+import { db } from "./firebase_db";
 
 function LoginPage(props) {
 
@@ -28,11 +29,34 @@ function LoginPage(props) {
       onHideLoginPage(); // Hide the login page after successful login
     })
     .catch((error) => {
-      // Handle login error
       const errorCode = error.code;
       const errorMessage = error.message;
       console.log(errorCode, errorMessage);
     });
+
+    console.log('User doesnt exist so creating user in firebase')
+    // User doesn't exist so we create a user
+    firebase.auth().createUserWithEmailAndPassword(email, password)
+    .then((userCredential) => {
+      const { user } = userCredential;
+      const userData = {
+        displayName: user.displayName,
+        email: user.email,
+        uid: user.uid
+      };
+      db.collection('users').doc(user.uid).set(userData)
+        .then(() => {
+          console.log('User document created successfully.');
+        })
+        .catch((error) => {
+          console.error('Error creating user document:', error);
+        });
+        onHideLoginPage(); // Hide the login page after successful login
+    })
+    .catch((error) => {
+      console.error('Error signing up:', error);
+    });
+
   }
 
   return (
