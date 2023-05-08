@@ -10,6 +10,7 @@ function LoginPage(props) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const { onHideLoginPage } = props;
+  const { onCancelLoginPage } = props;
 
   function handleEmailChange(e) {
     setEmail(e.target.value);
@@ -37,9 +38,15 @@ function LoginPage(props) {
       });
     })
     .catch((error) => {
+      // user doesnt exist
       const errorCode = error.code;
       const errorMessage = error.message;
       console.log(errorCode, errorMessage);
+      Swal.fire({   // Pop up Alert
+        title: 'Login Error!',
+        icon: 'error',
+        text: 'No account exists with this email',
+      });
     });
 
   }
@@ -61,6 +68,7 @@ function LoginPage(props) {
       return;
     })
     .catch((error) => {
+      // user doesnt exist
       const errorCode = error.code;
       const errorMessage = error.message;
       console.log(errorCode, errorMessage);
@@ -106,7 +114,7 @@ function LoginPage(props) {
         <input type="password" value={password} onChange={handlePasswordChange} />
         <button onClick={handleLogin}>Login</button>
         <button onClick={handleSignup}>Signup</button>
-        <button onClick={onHideLoginPage}>Cancel</button>
+        <button onClick={onCancelLoginPage}>Cancel</button>
       </form>
     </div>
   );
