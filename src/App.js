@@ -33,7 +33,7 @@ function App() {
       <div className='app_body'>
         <div className='app_container'>
           <NewsFeed />
-          <Stats />
+          <Stats onLoggedIn={loggedIn}/>
         </div>
       </div>
     </div>

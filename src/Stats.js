@@ -12,7 +12,7 @@ const currentTimestamp = Math.floor(currentDate.getTime() / 1000);
 const januaryFirst = new Date(currentDate.getFullYear(), 0, 1);
 const januaryFirstTimestamp = Math.floor(januaryFirst.getTime() / 1000);
 
-function Stats() {
+function Stats(props) {
 
   const [stockData, setStockData] = useState([]);
   const [myStocks, setMyStocks] = useState([]);
@@ -76,13 +76,15 @@ function Stats() {
     let promises = [];
     let historicalPromise = [];
 
-    getMyStocks();
+    // Fetch loggedIn User data from firebase
+    // getMyStocks();
     
+    /**  Stock Quota API CAll **/
+    // In this API call the attribute 'c' means current price
     stocksList.map((stock) => {
       promises.push(
         getStockData(stock)
         .then((res) => {
-          // console.log(res);
           tempStocksData.push({   // push response to tempStockData
             name: stock,
             ...res.data   // response data
@@ -90,12 +92,14 @@ function Stats() {
         })
       )
     });
-    Promise.all(promises).then(()=>{
-      tempStocksData.sort(function(a, b){return b.c - a.c});  // Sort data based on current price (API attribute 'c')
-      // console.log(tempStocksData);
-      setStockData(tempStocksData);
-    });
+    Promise.all(promises)
+      .then(()=>{
+        tempStocksData.sort(function(a, b){return b.c - a.c});  // Sort data based on current price (API attribute 'c')
+        setStockData(tempStocksData);
+        console.log('Stock Quota Data Fetched Successfully');
+      });
 
+    /**  Stock Candle API CAll **/
     // In this API call the attribute 'c' means closing price
     stocksList.map((stock) => {
       historicalPromise.push(
@@ -110,8 +114,8 @@ function Stats() {
       )
     });
     Promise.all(historicalPromise).then(()=>{
-      // console.log(tempHistoricalStockData);
       setStockCandles(tempHistoricalStockData);
+      console.log('Stock Candle Data Fetched Successfully');
     });
 
   }, []);
@@ -142,6 +146,7 @@ function Stats() {
             <div className='stats_rows'>
               {stockData.map((stock) => (
                 <StatsRow
+                  isLoggedIn = {props.onLoggedIn}
                   key={stock.name}
                   name={stock.name}
                   openPrice={stock.o}

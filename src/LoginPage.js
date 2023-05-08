@@ -1,6 +1,7 @@
 import { useState } from "react";
 import firebase from "firebase/compat/app";
 import 'firebase/compat/auth';
+import Swal from 'sweetalert2';
 import './LoginPage.css'
 import { db } from "./firebase_db";
 
@@ -19,6 +20,7 @@ function LoginPage(props) {
   }
 
   function handleLogin(e) {
+
     e.preventDefault();
     
     // Perform login with Firebase authentication
@@ -26,7 +28,13 @@ function LoginPage(props) {
     .then((userCredential) => {
       // Login successful
       const user = userCredential.user;
+      console.log(`${user.email} logged in successfully`);
       onHideLoginPage(); // Hide the login page after successful login
+      Swal.fire({   // Pop up Alert
+        title: 'Login',
+        icon: 'success',
+        text: `Welcome Back ${user.email}`,
+      });
     })
     .catch((error) => {
       const errorCode = error.code;
@@ -34,8 +42,31 @@ function LoginPage(props) {
       console.log(errorCode, errorMessage);
     });
 
-    console.log('User doesnt exist so creating user in firebase')
-    // User doesn't exist so we create a user
+  }
+
+  function handleSignup () {
+
+    // First check if the email is already in use or not
+    firebase.auth().signInWithEmailAndPassword(email, password)
+    .then((userCredential) => {
+      // Login successful
+      const user = userCredential.user;
+      console.log(`${user.email} already exists`);
+      // Pop up Alert
+      Swal.fire({
+        title: 'Email Already Exists!',
+        icon: 'warning',
+        text: 'You must login',
+      });
+      return;
+    })
+    .catch((error) => {
+      const errorCode = error.code;
+      const errorMessage = error.message;
+      console.log(errorCode, errorMessage);
+    });
+
+    // Perform Signup
     firebase.auth().createUserWithEmailAndPassword(email, password)
     .then((userCredential) => {
       const { user } = userCredential;
@@ -51,7 +82,14 @@ function LoginPage(props) {
         .catch((error) => {
           console.error('Error creating user document:', error);
         });
+        
+        console.log(`${user.email} Signed up successfully`);
         onHideLoginPage(); // Hide the login page after successful login
+        Swal.fire({   // Pop up Alert
+          title: 'Signed Up',
+          icon: 'success',
+          text: `Welcome ${user.email}`,
+        });
     })
     .catch((error) => {
       console.error('Error signing up:', error);
@@ -61,12 +99,13 @@ function LoginPage(props) {
 
   return (
     <div className="login_page">
-      <form onSubmit={handleLogin}>
+      <form>
         <label>Email:</label>
         <input type="email" value={email} onChange={handleEmailChange} />
         <label>Password:</label>
         <input type="password" value={password} onChange={handlePasswordChange} />
-        <button type="submit">Login</button>
+        <button onClick={handleLogin}>Login</button>
+        <button onClick={handleSignup}>Signup</button>
         <button onClick={onHideLoginPage}>Cancel</button>
       </form>
     </div>

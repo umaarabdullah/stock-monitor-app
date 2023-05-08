@@ -5,6 +5,7 @@ import Logo from './image.png'
 import { makeStyles } from '@material-ui/core';
 import './Header.css' 
 import { Search } from '@material-ui/icons'
+import Swal from 'sweetalert2';
 
 function Header(props) {
 
@@ -43,11 +44,16 @@ function Header(props) {
             .then(() => {
             // redirect the user to the login page here
             /** Clear User stock information and show only dashboard stocks **/
-            props.onLoggedOut();    // change log out button to login flag
-            console.log("User signed out successfully");
+                props.onLoggedOut();    // change login flag to remove log out button 
+                console.log("User signed out successfully");
+                Swal.fire({   // Pop up Alert
+                    title: 'You\'ve been logged out',
+                    icon: 'success',
+                    text: 'You have successfully logged out of the application',
+                });
             })
             .catch(error => {
-            console.log(error);
+                console.log(error);
             });
     }
 
