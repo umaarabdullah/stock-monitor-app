@@ -4,7 +4,7 @@ import { makeStyles } from '@material-ui/core';
 import './Header.css' 
 import { Search } from '@material-ui/icons'
 
-function Header() {
+function Header(props) {
 
     const [menuItemsdropdownOpen, setmenuItemsDropdownOpen] = useState(false);
     const menuItemsdropDownRef = useRef(null);
@@ -30,6 +30,11 @@ function Header() {
         setmenuItemsDropdownOpen(!menuItemsdropdownOpen);
     }
 
+    // handles login click
+    function handleLoginClick() {
+        props.onShowLoginPage();
+    }
+
     return (
         <div className='header_wrapper'>
             <div className='header_logo'>
@@ -49,8 +54,7 @@ function Header() {
                 <a href='#' onClick={togglemenuItemsDropdown}>Account</a>
                 {menuItemsdropdownOpen && (
                 <div className="menuItems_dropdown_content" aria-labelledby="dropdownMenuButton">
-                    <a className="dropdown_item_login" href="#" >Login</a>
-                    <a className="dropdown_item_signup" href="#">Sign Up</a>
+                    <a className="dropdown_item_signup" href="#" onClick={handleLoginClick}>login</a>
                 </div>
                 )}
             </div>
