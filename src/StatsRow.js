@@ -33,47 +33,6 @@ function StatsRow(props) {
     return true;
   };
 
-  // Firestore query fetch data
-  async function fetchArrayData (label1, label2) {
-
-    console.log(userId);
-    const userDocRef = db.collection("users").doc(userId);
-
-    userDocRef
-    .get()
-    .then((doc) => {
-      if (doc.exists) {
-        const userData = doc.data(); // get the user data
-        console.log(userData);
-        /** MUST use userData in the the block */
-        // Traverse userData list
-        const userDataList = Object.keys(userData).map((key) => ({
-          key,
-          value: userData[key],
-        }));
-        userDataList.forEach((item) => {
-          if(item.key == props.name){
-            console.log(item.key, item.value);
-            console.log(item.value[1]);
-            old_shares = parseInt(item.value[1]);
-            new_shares = parseInt(new_shares);
-            new_shares = new_shares + old_shares;
-            // new_shares =  new_shares + old_shares;
-            console.log('dsfsadfds');
-            console.log(new_shares);
-          }
-        });
-
-      } else {
-        console.log("No such user document");
-      }
-    })
-    .catch((error) => {
-      console.log("Error getting user document:", error);
-    });
-
-  }
-
   // buy stock share function. /** This function is triggered when buy button is clicked */
   async function buyStock () {
 
@@ -126,8 +85,8 @@ function StatsRow(props) {
         }));
         userDataList.forEach((item) => {
           if(item.key == props.name){
-            console.log(item.key, item.value);
-            console.log(item.value[1]);
+            // console.log(item.key, item.value);
+            // console.log(item.value[1]);
             old_shares = parseInt(item.value[1]);
             new_shares = parseInt(new_shares);
             new_shares = new_shares + old_shares;
