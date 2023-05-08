@@ -1,4 +1,6 @@
 import { useState } from "react";
+import firebase from "firebase/compat/app";
+import 'firebase/compat/auth';
 import './LoginPage.css'
 
 function LoginPage(props) {
@@ -17,9 +19,20 @@ function LoginPage(props) {
 
   function handleLogin(e) {
     e.preventDefault();
+    
     // Perform login with Firebase authentication
-    // ...
-    onHideLoginPage(); // Hide the login page after successful login
+    firebase.auth().signInWithEmailAndPassword(email, password)
+    .then((userCredential) => {
+      // Login successful
+      const user = userCredential.user;
+      onHideLoginPage(); // Hide the login page after successful login
+    })
+    .catch((error) => {
+      // Handle login error
+      const errorCode = error.code;
+      const errorMessage = error.message;
+      console.log(errorCode, errorMessage);
+    });
   }
 
   return (

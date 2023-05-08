@@ -1,4 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react'
+import firebase from "firebase/compat/app";
+import 'firebase/compat/auth';
 import Logo from './image.png'
 import { makeStyles } from '@material-ui/core';
 import './Header.css' 
@@ -35,6 +37,20 @@ function Header(props) {
         props.onShowLoginPage();
     }
 
+    function handleLogoutClick() {
+        // firebase signout
+        firebase.auth().signOut()
+            .then(() => {
+            // redirect the user to the login page here
+            /** Clear User stock information and show only dashboard stocks **/
+            props.onLoggedOut();    // change log out button to login flag
+            console.log("User signed out successfully");
+            })
+            .catch(error => {
+            console.log(error);
+            });
+    }
+
     return (
         <div className='header_wrapper'>
             <div className='header_logo'>
@@ -54,7 +70,12 @@ function Header(props) {
                 <a href='#' onClick={togglemenuItemsDropdown}>Account</a>
                 {menuItemsdropdownOpen && (
                 <div className="menuItems_dropdown_content" aria-labelledby="dropdownMenuButton">
-                    <a className="dropdown_item_signup" href="#" onClick={handleLoginClick}>login</a>
+                    {!props.onShowLoggedIn && (
+                        <a className="dropdown_item_signup" href="#" onClick={handleLoginClick}>login</a>
+                    )}
+                    {props.onShowLoggedIn && (
+                        <a className="dropdown_item_signout" href="#" onClick={handleLogoutClick}>logout</a>
+                    )}
                 </div>
                 )}
             </div>
