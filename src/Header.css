@@ -52,6 +52,7 @@
 }
   
 .header_menuItems {
+    display: flex;
     margin-right: 48px;
 }
   
@@ -69,4 +70,18 @@
   
 a:first-of-type {
     color: #dde26a ;
+}
+
+.menuItems_dropdown_content {
+    display: flex;
+    flex-direction: column;
+    color: #dde26a;
+}
+
+.menuItems_dropdown_content a:first-of-type {
+    color: #fff;
+}
+
+.menuItems_dropdown_content a:hover {
+    color: #dde26a;
 }
