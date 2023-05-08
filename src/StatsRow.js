@@ -5,11 +5,18 @@ import { db } from './firebase_db';
 import firebase from 'firebase/compat/app';
 import 'firebase/compat/auth';
 import 'firebase/compat/firestore';
+import { useState } from 'react';
 
 function StatsRow(props) {
+  
+  let userId;
 
   const percentage = ((props.price - props.openPrice)/props.openPrice) * 100;
   const isPositive = percentage >= 0;
+  let new_shares = 0;   // Initialize new_shares with 0
+  
+  let old_shares = 0;   // Initialize old_shares with 0
+  let didUserBuyBefore = false;
 
   /** Function return meanings: 
    * True = user logged in ------ False = user not logged in */
@@ -24,8 +31,50 @@ function StatsRow(props) {
       return false;
     }
     return true;
+  };
+
+  // Firestore query fetch data
+  async function fetchArrayData (label1, label2) {
+
+    console.log(userId);
+    const userDocRef = db.collection("users").doc(userId);
+
+    userDocRef
+    .get()
+    .then((doc) => {
+      if (doc.exists) {
+        const userData = doc.data(); // get the user data
+        console.log(userData);
+        /** MUST use userData in the the block */
+        // Traverse userData list
+        const userDataList = Object.keys(userData).map((key) => ({
+          key,
+          value: userData[key],
+        }));
+        userDataList.forEach((item) => {
+          if(item.key == props.name){
+            console.log(item.key, item.value);
+            console.log(item.value[1]);
+            old_shares = parseInt(item.value[1]);
+            new_shares = parseInt(new_shares);
+            new_shares = new_shares + old_shares;
+            // new_shares =  new_shares + old_shares;
+            console.log('dsfsadfds');
+            console.log(new_shares);
+          }
+        });
+
+      } else {
+        console.log("No such user document");
+      }
+    })
+    .catch((error) => {
+      console.log("Error getting user document:", error);
+    });
+
   }
 
+  // buy stock share function. /** This function is triggered when buy button is clicked */
   async function buyStock () {
 
     // First check if the user is logged in
@@ -47,60 +96,73 @@ function StatsRow(props) {
       }
     })
 
-    console.log(`Number of shares purchased ${num_shares}`);
+    new_shares = num_shares;
+    console.log(`Number of shares purchased ${new_shares}`);
+    
+    // Authenticate with firebase
+    const uid = firebase.auth().currentUser.uid;
+    userId = uid;
 
-    if (num_shares) {
-      // sweetalert success pop up
-      Swal.fire({
-        title: `${num_shares} Shares of ${props.name} Stock has been Purchased`,
-        icon: 'success',
-        text: props.name,
-      });
-    }
+    let old_shares = 0;
+    let myArray = [props.name, new_shares];     // an array composed of company name and new_shares count
+    const companyName = props.name;             // Variable for firestore label name ***uses computed property names syntax***
 
-    // const uid = firebase.auth().currentUser.uid;
-    // const dataToUpdate = {
-    //   // Data to update
-    //   company: props.name,
-    //   shares: /* Number of new shares User wants to purchase */
-    // };
+    /** Must Check if user has purchased stocks of this company before */
+    // await fetchArrayData(props.name, props.name);
 
-    // /** Must Check if user has purchased stocks of this ticker before then decide to set or update shares */
-    // db.collection('users').doc(uid).update(dataToUpdate)
-    //   .then(() => {
-    //     console.log('User data updated successfully.');
-    //   })
-    //   .catch((error) => {
-    //     console.error('Error updating user data:', error);
-    //   });
+    console.log(userId);
+    const userDocRef = db.collection("users").doc(userId);
+    userDocRef
+    .get()
+    .then((doc) => {      /* Everything has to be done inside the then block */
+      if (doc.exists) {
+        const userData = doc.data(); // get the user data
+        // console.log(userData);
+        /** MUST use userData in the the block */
+        // Traverse userData list
+        const userDataList = Object.keys(userData).map((key) => ({
+          key,
+          value: userData[key],
+        }));
+        userDataList.forEach((item) => {
+          if(item.key == props.name){
+            console.log(item.key, item.value);
+            console.log(item.value[1]);
+            old_shares = parseInt(item.value[1]);
+            new_shares = parseInt(new_shares);
+            new_shares = new_shares + old_shares;
+          }
+        });
+      } 
+      else {
+        console.log("No such user document");
+      }
 
-    // cross-check with firestore database
-
-    // db.collection('users')
-    // .where("ticker", "==", props.name)
-    // .get()
-    // .then((querySnapshot) => {
-
-    //   if(querySnapshot.docs.length > 0){
-    //     // Update existing record
-    //     querySnapshot.forEach((doc) => {
-    //       db.collection('myStocks')
-    //       .doc(doc.id)
-    //       .update({
-    //         shares: doc.data().shares +=1
-    //       })
-    //     });
-    //   }
-    //   else{
-    //     // Add a new record
-    //     db.collection('myStocks')
-    //     .doc().set({
-    //       ticker: props.name,
-    //       shares: 1
-    //     })
-    //     console.log("added in firestore db");
-    //   }
-    // })
+      // Update database accordingly
+      myArray = [props.name, new_shares];
+      // Save to database with company as the label thus making it easier to query
+      db.collection('users').doc(uid).update({
+          [companyName]: myArray
+        })
+        .then(() => {
+          console.log('User data updated successfully.');
+        })
+        .catch((error) => {
+          console.error('Error updating user data:', error);
+        });
+      if (new_shares) {
+        // sweetalert success pop up
+        Swal.fire({
+          title: `${new_shares} Shares of ${props.name} Stock has been Purchased`,
+          icon: 'success',
+          text: props.name,
+        });
+      }
+      console.log(`${new_shares} shares owned by Client`);
+    })
+    .catch((error) => {
+      console.log("Error getting user document:", error);
+    });
 
   };
 
