@@ -14,9 +14,8 @@ function StatsRow(props) {
   const percentage = ((props.price - props.openPrice)/props.openPrice) * 100;
   const isPositive = percentage >= 0;
   let new_shares = 0;   // Initialize new_shares with 0
-  
-  let old_shares = 0;   // Initialize old_shares with 0
-  let didUserBuyBefore = false;
+
+  const { onBuyGetMyStock } = props;
 
   /** Function return meanings: 
    * True = user logged in ------ False = user not logged in */
@@ -109,13 +108,14 @@ function StatsRow(props) {
         .catch((error) => {
           console.error('Error updating user data:', error);
         });
-      if (new_shares) {
+      if (num_shares) {
         // sweetalert success pop up
         Swal.fire({
-          title: `${new_shares} Shares of ${props.name} Stock has been Purchased`,
+          title: `${num_shares} Shares of ${props.name} Stock has been Purchased`,
           icon: 'success',
           text: props.name,
         });
+        onBuyGetMyStock();    // used it as well just to see if it works or not !! Surprise Surprise It works !!
       }
       console.log(`${new_shares} shares owned by Client`);
     })
@@ -123,12 +123,17 @@ function StatsRow(props) {
       console.log("Error getting user document:", error);
     });
 
+    // trigger fetch from firebase to get recently modified data
+    onBuyGetMyStock();
+
   };
 
   return (
     <div className="row" >
         <div className='buy_button_container'>
-          <button className='button-37' onClick={buyStock}>Buy</button>
+          {!props.shares &&
+            <button className='button-37' onClick={buyStock}>Buy</button>
+          }
         </div>
         <div className="row_intro">
             <h1>{props.name}</h1>

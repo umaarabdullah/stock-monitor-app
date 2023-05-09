@@ -108,6 +108,9 @@ function Stats(props) {
 
     let promises = [];
     let historicalPromise = [];
+
+    // Get user stock data from firebase
+    getMyStocks();
     
     /**  Stock Quota API CAll **/
     // In this API call the attribute 'c' means current price
@@ -158,8 +161,9 @@ function Stats(props) {
           </div>
           <div className='stats_content'>
             <div className='stats_rows'>
-              {myStocks.map((stock) => (
+              {props.onLoggedIn && myStocks.map((stock) => (
                 <StatsRow
+                  onBuyGetMyStock = {getMyStocks}
                   key={stock.name}
                   name={stock.name}
                   openPrice={stock.info.o}
@@ -176,6 +180,7 @@ function Stats(props) {
             <div className='stats_rows'>
               {stockData.map((stock) => (
                 <StatsRow
+                  onBuyGetMyStock = {getMyStocks}
                   isLoggedIn = {props.onLoggedIn}
                   key={stock.name}
                   name={stock.name}
