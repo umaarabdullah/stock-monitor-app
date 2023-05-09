@@ -14,6 +14,7 @@ function StatsRow(props) {
   const percentage = ((props.price - props.openPrice)/props.openPrice) * 100;
   const isPositive = percentage >= 0;
   let new_shares = 0;   // Initialize new_shares with 0
+  let shares_to_sell = 0;
 
   const { onBuyGetMyStock } = props;
 
@@ -52,7 +53,7 @@ function StatsRow(props) {
           return 'You need to write something!'
         }
       }
-    })
+    });
 
     new_shares = num_shares;
     console.log(`Number of shares purchased ${new_shares}`);
@@ -66,8 +67,6 @@ function StatsRow(props) {
     const companyName = props.name;             // Variable for firestore label name ***uses computed property names syntax***
 
     /** Must Check if user has purchased stocks of this company before */
-    // await fetchArrayData(props.name, props.name);
-
     console.log(userId);
     const userDocRef = db.collection("users").doc(userId);
     userDocRef
@@ -128,11 +127,102 @@ function StatsRow(props) {
 
   };
 
+  async function sellStock () {
+
+    // Input how many shares user wants to sell
+    const { value: num_shares } = await Swal.fire({
+      title: `Sell ${props.name} Stock`,
+      input: 'number',
+      inputLabel: 'Number of Shares',
+      inputPlaceholder: 'Enter number of shares you want to sell',
+      showCancelButton: true,
+      inputValidator: (value) => {
+        if (!value) {
+          return 'You need to write something!'
+        }
+      }
+    });
+
+    shares_to_sell = num_shares;
+    console.log(`Number of shares to sell ${shares_to_sell}`);
+
+    // Authenticate with firebase
+    const uid = firebase.auth().currentUser.uid;
+    userId = uid;
+
+    let old_shares = 0;
+    let myArray = [props.name, shares_to_sell];     // an array composed of company name and new_shares count
+    const companyName = props.name;             // Variable for firestore label name ***uses computed property names syntax***
+
+    /* Must check that user isn't trying to sell more shares then he already has */
+    console.log(userId);
+    const userDocRef = db.collection("users").doc(userId);
+    userDocRef
+    .get()
+    .then((doc) => {      /* Everything has to be done inside the then block */
+      if (doc.exists) {
+        const userData = doc.data(); // get the user data
+        // console.log(userData);
+        /** MUST use userData in the the block */
+        // Traverse userData list
+        const userDataList = Object.keys(userData).map((key) => ({
+          key,
+          value: userData[key],
+        }));
+        userDataList.forEach((item) => {
+          if(item.key == props.name){
+            // console.log(item.key, item.value);
+            // console.log(item.value[1]);
+            old_shares = parseInt(item.value[1]);
+            shares_to_sell = parseInt(shares_to_sell);
+            shares_to_sell = old_shares - shares_to_sell;
+          }
+        });
+      } 
+      else {
+        console.log("No such user document");
+      }
+
+      // Update database accordingly
+      myArray = [props.name, shares_to_sell];
+      db.collection('users').doc(uid).update({
+          [companyName]: myArray
+        })
+        .then(() => {
+          console.log('User data updated successfully.');
+        })
+        .catch((error) => {
+          console.error('Error updating user data:', error);
+        });
+
+      if (num_shares) {
+        // sweetalert success pop up
+        Swal.fire({
+          title: `${num_shares} Shares of ${props.name} Stock has been Sold`,
+          icon: 'success',
+          text: props.name,
+        });
+        onBuyGetMyStock();    // used it as well just to see if it works or not !! Surprise Surprise It works !!
+      }
+      console.log(`${shares_to_sell} shares owned by Client`);
+    })
+    .catch((error) => {
+      console.log("Error getting user document:", error);
+    });
+
+    // trigger fetch from firebase to get recently modified data
+    onBuyGetMyStock();
+
+  };
+
   return (
     <div className="row" >
         <div className='buy_button_container'>
           {!props.shares &&
-            <button className='button-37' onClick={buyStock}>Buy</button>
+            <button id='buy_button' className='button-37' onClick={buyStock}>Buy</button>
+          }
+          {props.shares &&
+            <button id='sell_button' className='button-37' onClick={sellStock}>Sell</button>
           }
         </div>
         <div className="row_intro">

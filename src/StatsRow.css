@@ -45,6 +45,10 @@ button {
     margin: 12px;
 }
 
+#sell_button {
+    background-color: rgb(211, 19, 19);
+}  
+
 .button-37 {
     background-color: #13aa52;
     border: 1px solid #13aa52;
