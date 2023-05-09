@@ -15,6 +15,10 @@ function App() {
     setShowLoginPage(true);
   }
 
+  function handleCancelLoginPage(){
+    setShowLoginPage(false);
+  }
+
   function handleHideLoginPage() {
     setloggedIn(true);        // flag to show logout button
     setShowLoginPage(false);
@@ -26,14 +30,14 @@ function App() {
 
   return (
     <div className="App">
-      {showLoginPage && <LoginPage onHideLoginPage={handleHideLoginPage} />}
+      {showLoginPage && <LoginPage onHideLoginPage={handleHideLoginPage} onCancelLoginPage={handleCancelLoginPage}/>}
       <div className='app_header'>
         <Header onShowLoginPage={handleShowLoginPage} onShowLoggedIn={loggedIn} onLoggedOut={handleOnLoggedOut}/> 
       </div>
       <div className='app_body'>
         <div className='app_container'>
           <NewsFeed />
-          <Stats />
+          <Stats onLoggedIn={loggedIn}/>
         </div>
       </div>
     </div>

@@ -3,6 +3,9 @@ import './Stats.css'
 import axios from 'axios';
 import StatsRow from './StatsRow';
 import { db } from './firebase_db';
+import firebase from 'firebase/compat/app';
+import 'firebase/compat/auth';
+import 'firebase/compat/firestore'
 
 const token = "cgrime9r01qs9ra1td0gcgrime9r01qs9ra1td10";
 const base_url = "https://finnhub.io/api/v1";
@@ -12,41 +15,72 @@ const currentTimestamp = Math.floor(currentDate.getTime() / 1000);
 const januaryFirst = new Date(currentDate.getFullYear(), 0, 1);
 const januaryFirstTimestamp = Math.floor(januaryFirst.getTime() / 1000);
 
-function Stats() {
+const stocksList = ["AAPL", "MSFT", "TSLA", "META", "BABA", "UBER", "DIS", "SBUX", "AMZN", "NIO", "IBM"];
+
+function Stats(props) {
 
   const [stockData, setStockData] = useState([]);
   const [myStocks, setMyStocks] = useState([]);
   const [stockCandles, setStockCandles] = useState([]);
 
   // Fetch myStock data from Firebase 
-  const getMyStocks = () => {
-    db
-    .collection('myStocks')
-    .onSnapshot(snapshot => {
-      // console.log(snapshot);
-      let promises = [];
-      let tempData = []
-      // fetch userStock information from firebase
-      snapshot.docs.map((doc) => {
-        //console.log(doc.data());
-        promises.push(getStockData(doc.data().ticker)
-        .then(res => {
-          tempData.push({
-            id: doc.id,         // firestore database key
-            data: doc.data(),   // firestore feteched data
-            info: res.data      // API Response from finnhub
-          })
-        })
-      )})
-      // fetch stock information of userStocks from finnhub
-      Promise.all(promises).then(()=>{
-        // console.log(tempData[0].data.ticker);
-        /* Sort based on number of shares */
-        tempData.sort(function(a, b){return b.data.shares - a.data.shares});  // Sort data based on number of shares already purchased by the user
-        setMyStocks(tempData);
-      })
+  async function getMyStocks () {
 
+    // First check if the user is logged in
+    if(!props.onLoggedIn){
+      return;
+    }
+
+    const userId = firebase.auth().currentUser.uid;     // must use async function inorder for this to work
+
+    db.collection("users").doc(userId)
+    .get()
+    .then((doc) => {      /* Everything has to be done inside the then block */
+      if (doc.exists) {
+        let promises = [];
+        let tempData = [];
+        const userData = doc.data(); // get the user data
+        // console.log(userData);
+        /** MUST use userData in the the block */
+        const userDataList = Object.keys(userData).map((key) => ({
+          key,
+          value: userData[key],
+        }));
+
+        userDataList.forEach((item) => {
+          if(stocksList.includes(item.key)){
+            // console.log("Match");
+            console.log(item.key, item.value);
+            promises.push(getStockData(item.key)
+            .then(res => {
+              tempData.push({
+                id: doc.id,               // firestore database key
+                name: item.key,           // firestore feteched data company name
+                shares: item.value[1],    // shares
+                info: res.data            // API Response from finnhub
+              })
+            }));
+
+          }
+        });
+        Promise.all(promises).then(()=>{
+          // console.log(tempData);
+          /* Sort based on number of shares */
+          tempData.sort(function(a, b){return b.shares - a.shares});  // Sort data based on number of shares already purchased by the user
+          setMyStocks(tempData);
+        });
+      } 
+      else {
+        console.log("No such user document");
+      }
     })
+    .catch((error) => {
+      console.log("Error getting user document:", error);
+    });
+
+    // console.log('myStocks');
+    // console.log(myStocks);
+
   };
 
   // API Call for real-time quote data for US stocks
@@ -72,17 +106,18 @@ function Stats() {
     let tempStocksData = [];
     let tempHistoricalStockData = [];
 
-    const stocksList = ["AAPL", "MSFT", "TSLA", "META", "BABA", "UBER", "DIS", "SBUX", "AMZN", "NIO", "IBM"];
     let promises = [];
     let historicalPromise = [];
 
+    // Get user stock data from firebase
     getMyStocks();
     
+    /**  Stock Quota API CAll **/
+    // In this API call the attribute 'c' means current price
     stocksList.map((stock) => {
       promises.push(
         getStockData(stock)
         .then((res) => {
-          // console.log(res);
           tempStocksData.push({   // push response to tempStockData
             name: stock,
             ...res.data   // response data
@@ -90,12 +125,14 @@ function Stats() {
         })
       )
     });
-    Promise.all(promises).then(()=>{
-      tempStocksData.sort(function(a, b){return b.c - a.c});  // Sort data based on current price (API attribute 'c')
-      // console.log(tempStocksData);
-      setStockData(tempStocksData);
-    });
+    Promise.all(promises)
+      .then(()=>{
+        tempStocksData.sort(function(a, b){return b.c - a.c});  // Sort data based on current price (API attribute 'c')
+        setStockData(tempStocksData);
+        console.log('Stock Quota Data Fetched Successfully');
+      });
 
+    /**  Stock Candle API CAll **/
     // In this API call the attribute 'c' means closing price
     stocksList.map((stock) => {
       historicalPromise.push(
@@ -110,8 +147,8 @@ function Stats() {
       )
     });
     Promise.all(historicalPromise).then(()=>{
-      // console.log(tempHistoricalStockData);
       setStockCandles(tempHistoricalStockData);
+      console.log('Stock Candle Data Fetched Successfully');
     });
 
   }, []);
@@ -120,16 +157,17 @@ function Stats() {
     <div className='stats'>
         <div className='stats_container'>
           <div className='stats_header'>
-            <p>Stocks</p>
+            <p onClick={getMyStocks}>Stocks</p>
           </div>
           <div className='stats_content'>
             <div className='stats_rows'>
-              {myStocks.map((stock) => (
+              {props.onLoggedIn && myStocks.map((stock) => (
                 <StatsRow
-                  key={stock.data.ticker}
-                  name={stock.data.ticker}
+                  onBuyGetMyStock = {getMyStocks}
+                  key={stock.name}
+                  name={stock.name}
                   openPrice={stock.info.o}
-                  shares={stock.data.shares}
+                  shares={stock.shares}
                   price={stock.info.c}
                 />
               ))}
@@ -142,6 +180,8 @@ function Stats() {
             <div className='stats_rows'>
               {stockData.map((stock) => (
                 <StatsRow
+                  onBuyGetMyStock = {getMyStocks}
+                  isLoggedIn = {props.onLoggedIn}
                   key={stock.name}
                   name={stock.name}
                   openPrice={stock.o}

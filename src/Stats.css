@@ -28,6 +28,10 @@
     font-weight: 500;
 }
 
+.stats_header p {
+    cursor: pointer;
+}
+
 .stats_lists {
     border-top: 1px solid #42494d;
 }
