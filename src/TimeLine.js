@@ -3,35 +3,34 @@ import './TimeLine.css'
 
 function TimeLine(props) {
 
-  const [isActive, setIsActive] = useState(false);
   const { chartTitle } = props;
 
-  const handleClick = () => {
-    setIsActive(!isActive);
+  const [activeButton, setActiveButton] = useState(0);
+
+  const handleButtonClick = (index) => {
+    setActiveButton(index);
   }
 
   return (
     <div className="timeline__container">
-        <div className="timeline__buttons__container">
+      <div className="timeline__buttons__container">
 
-            {isActive && <div className="timeline__button active" onClick={handleClick}>LIVE</div>}
-            {!isActive && <div className="timeline__button" onClick={handleClick}>LIVE</div>}
+        {activeButton === 0 && <div className="timeline__button active" onClick={() => handleButtonClick(-1)}>LIVE</div>}
+        {activeButton !== 0 && <div className="timeline__button" onClick={() => handleButtonClick(0)}>LIVE</div>}
 
-            {isActive && <div className="timeline__button active" onClick={handleClick}>1D</div>}
-            {!isActive && <div className="timeline__button" onClick={handleClick}>1D</div>}
+        {activeButton === 1 && <div className="timeline__button active" onClick={() => handleButtonClick(-1)}>1D</div>}
+        {activeButton !== 1 && <div className="timeline__button" onClick={() => handleButtonClick(1)}>1D</div>}
 
-            {isActive && <div className="timeline__button active" onClick={handleClick}>1W</div>}
-            {!isActive && <div className="timeline__button" onClick={handleClick}>1W</div>}
+        {activeButton === 2 && <div className="timeline__button active" onClick={() => handleButtonClick(-1)}>1W</div>}
+        {activeButton !== 2 && <div className="timeline__button" onClick={() => handleButtonClick(2)}>1W</div>}
 
-            {isActive && <div className="timeline__button active" onClick={handleClick}>3M</div>}
-            {!isActive && <div className="timeline__button" onClick={handleClick}>3M</div>}
+        {activeButton === 3 && <div className="timeline__button active" onClick={() => handleButtonClick(-1)}>3M</div>}
+        {activeButton !== 3 && <div className="timeline__button" onClick={() => handleButtonClick(3)}>3M</div>}
 
-            {isActive && <div className="timeline__button active" onClick={handleClick}>1Y</div>}
-            {!isActive && <div className="timeline__button" onClick={handleClick}>1Y</div>}
-
-            {isActive && <div className="timeline__button active" onClick={handleClick}>ALL</div>}
-            {!isActive && <div className="timeline__button" onClick={handleClick}>ALL</div>}                                                                           
-        </div>
+        {activeButton === 4 && <div className="timeline__button active" onClick={() => handleButtonClick(-1)}>1Y</div>}
+        {activeButton !== 4 && <div className="timeline__button" onClick={() => handleButtonClick(4)}>1Y</div>}
+      
+      </div>
         <div className='chart_title'>
           <h2>{chartTitle}</h2>
         </div>
