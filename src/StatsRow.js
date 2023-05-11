@@ -172,8 +172,6 @@ function StatsRow(props) {
     .then((doc) => {      /* Everything has to be done inside the then block */
       if (doc.exists) {
         const userData = doc.data(); // get the user data
-        // console.log(userData);
-        /** MUST use userData in the the block */
         // Traverse userData list
         const userDataList = Object.keys(userData).map((key) => ({
           key,
@@ -181,8 +179,7 @@ function StatsRow(props) {
         }));
         userDataList.forEach((item) => {
           if(item.key == props.name){
-            // console.log(item.key, item.value);
-            // console.log(item.value[1]);
+            // console.log(item.key, item.value);             // console.log(item.value[1]);
             old_shares = parseInt(item.value[1]);
             shares_to_sell = parseInt(shares_to_sell);
             shares_to_sell = old_shares - shares_to_sell;
