@@ -6,7 +6,7 @@ import { useState } from 'react'
 import { Chip } from '@material-ui/core'
 import { Avatar } from '@material-ui/core'
 
-function NewsFeed() {
+function NewsFeed(props) {
 
   const popularTopics = [
     "Technology",
@@ -22,6 +22,7 @@ function NewsFeed() {
 
   const handleClick = () => {
     console.log('clicked');
+    // console.log(props.graphData);
   };
 
   return (
@@ -34,7 +35,7 @@ function NewsFeed() {
             </div>
 
             <div className='newsfeed_chart'>
-              <LineGraph />
+              <LineGraph lineChartData={props.graphData}/>
               <TimeLine />
             </div>
           </div>

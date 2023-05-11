@@ -1,13 +1,24 @@
 import './StatsRow.css'
 import Swal from 'sweetalert2';
 import StockSVG from './stock.svg'
+import axios from 'axios';
 import { db } from './firebase_db';
 import firebase from 'firebase/compat/app';
 import 'firebase/compat/auth';
 import 'firebase/compat/firestore';
 import { useState } from 'react';
 
+const token = "cgrime9r01qs9ra1td0gcgrime9r01qs9ra1td10";
+const base_url = "https://finnhub.io/api/v1";
+
+const currentDate = new Date();
+const currentTimestamp = Math.floor(currentDate.getTime() / 1000);
+const januaryFirst = new Date(currentDate.getFullYear(), 0, 1);
+const januaryFirstTimestamp = Math.floor(januaryFirst.getTime() / 1000);
+
 function StatsRow(props) {
+
+  const [stockCandle, setStockCandle] = useState([]);
   
   let userId;
 
@@ -215,13 +226,43 @@ function StatsRow(props) {
 
   };
 
+  // API Call for stock candles i.e historical data (1Y (Each Day), Monthly, Weekly, Per minute (Live))
+  const getHistoricalStockData = (stock) => {
+    return axios
+      .get(`${base_url}/stock/candle?symbol=${stock}&resolution=D&from=${januaryFirstTimestamp}&to=${currentTimestamp}&token=${token}`)   // resolution for daily intervalled candles and time from janurary first to current
+      .catch((error) => {
+        console.error("Error", error.message);
+      });
+  };
+
+  // Handles Sending graph data to linechart from statrow
+  const getGraphData = async () => {
+    console.log(januaryFirstTimestamp);
+    console.log(currentTimestamp);
+    let tempData = [];
+    try {
+      const res = await getHistoricalStockData(props.name);
+      // console.log(res);
+      tempData.push({
+        name: props.name,
+        data: res
+      });
+      props.onSetGraphData(tempData);   // pass to graphData i.e stock name to newsfeed 
+    } catch(err) {
+      console.error(err);
+    }
+  }
+  async function handleRowClick() {
+    getGraphData();
+  }
+
   return (
-    <div className="row" >
+    <div className="row" onClick={handleRowClick}>
         <div className='buy_button_container'>
           {!props.shares &&
             <button id='buy_button' className='button-37' onClick={buyStock}>Buy</button>
           }
-          {props.shares &&
+          {props.shares > 0 &&
             <button id='sell_button' className='button-37' onClick={sellStock}>Sell</button>
           }
         </div>

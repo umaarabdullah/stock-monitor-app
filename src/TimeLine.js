@@ -12,6 +12,7 @@ function TimeLine() {
   return (
     <div className="timeline__container">
         <div className="timeline__buttons__container">
+
             {isActive && <div className="timeline__button active" onClick={handleClick}>LIVE</div>}
             {!isActive && <div className="timeline__button" onClick={handleClick}>LIVE</div>}
 
