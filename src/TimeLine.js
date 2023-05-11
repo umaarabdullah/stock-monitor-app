@@ -4,6 +4,7 @@ import './TimeLine.css'
 function TimeLine(props) {
 
   const [isActive, setIsActive] = useState(false);
+  const { chartTitle } = props;
 
   const handleClick = () => {
     setIsActive(!isActive);
@@ -30,6 +31,9 @@ function TimeLine(props) {
 
             {isActive && <div className="timeline__button active" onClick={handleClick}>ALL</div>}
             {!isActive && <div className="timeline__button" onClick={handleClick}>ALL</div>}                                                                           
+        </div>
+        <div className='chart_title'>
+          <h2>{chartTitle}</h2>
         </div>
     </div>
   )

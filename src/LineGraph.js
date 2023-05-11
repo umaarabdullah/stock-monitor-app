@@ -45,6 +45,7 @@ function LineGraph(props) {
 
   const { lineChartData } = props;
   const { onStockRowClick } = props;
+  const { setChartTitle } = props;
 
   const [data, setData] = useState([]);
   const [labels, setLabels] = useState([]);
@@ -55,9 +56,11 @@ function LineGraph(props) {
     console.log(`row clicked: ${onStockRowClick}`);
     
     if(onStockRowClick){
+      setChartTitle(onStockRowClick.toString());
       handleGraphData();
     }
     else{
+      setChartTitle('Default');
       handleDefaultGraphData();
     }
 
