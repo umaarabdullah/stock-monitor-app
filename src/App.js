@@ -11,6 +11,10 @@ function App() {
   const [showLoginPage, setShowLoginPage] = useState(false);
   const [loggedIn, setloggedIn] = useState(false);      // logged in flag
 
+  const [graphData, setGraphData] = useState([]);
+  const [onStockRowClick, setOnStockRowClick] = useState(false);
+
+
   function handleShowLoginPage() {
     setShowLoginPage(true);
   }
@@ -36,8 +40,10 @@ function App() {
       </div>
       <div className='app_body'>
         <div className='app_container'>
-          <NewsFeed />
-          <Stats onLoggedIn={loggedIn}/>
+          <NewsFeed graphData={graphData} onStockRowClick={onStockRowClick}/>
+          <Stats onLoggedIn={loggedIn} onSetGraphData={setGraphData} 
+            OnSetOnStockRowClick={setOnStockRowClick}
+          />
         </div>
       </div>
     </div>

@@ -41,31 +41,69 @@ const options = {
   },
 };
 
-// const labels = ["January", "February", "March", "April", "May", "June"];
+function LineGraph(props) {
 
-function LineGraph({ casesType }) {
+  const { lineChartData } = props;
+  const { onStockRowClick } = props;
+  const { setChartTitle } = props;
 
-  const [data, setData] = useState({});
-  const [labels, setLabels] = useState({});
+  const [data, setData] = useState([]);
+  const [labels, setLabels] = useState([]);
+  const [graphDataByDay, setGraphDataByDay] = useState(false);
 
   useEffect(() => {
+
+    console.log(`row clicked: ${onStockRowClick}`);
     
-    let data = [];
-    let labels = [];
+    if(onStockRowClick){
+      setChartTitle(onStockRowClick.toString());
+      handleGraphData();
+    }
+    else{
+      setChartTitle('Default');
+      handleDefaultGraphData();
+    }
+
+  }, [onStockRowClick]);
+
+
+  function handleDefaultGraphData() {
+    // LineChart data to show by default
+    let xLabels = [];
+    let sample_data = [];
     let value = 50;
-    for(var i = 0; i < 366; i++){
+    for(var i = 0; i < 100; i++){
       let date = new Date();
       date.setHours(0,0,0,0);
       date.setDate(i);
       value += Math.round((Math.random() < 0.5 ? 1 : 0) * Math.random() * 10);
-      labels.push(date.toString());
-      data.push(value);
+      xLabels.push(date.toString());
+      sample_data.push(value);
     }
-    // data = [0, 10, 5, 2, 20, 30, 45];
-    setData(data);
-    setLabels(labels);
+    setData(sample_data);
+    setLabels(xLabels);
+  }
 
-  }, []);
+  function handleGraphData(){
+    
+    let graphdata = [];
+    console.log(lineChartData);
+    graphdata = lineChartData[0].data.data.c;     // c means closing prices
+    setData(graphdata);
+
+    const currentDate = new Date();
+    const januaryFirst = new Date(currentDate.getFullYear(), 0, 1);
+    let dates = [];
+    let date = januaryFirst;
+    // Generate the dates of each day from januaryFirst to current
+    while (date <= currentDate) {
+      dates.push(date.toString());
+      date = new Date(date.getFullYear(), date.getMonth(), date.getDate() + 1);
+    }
+    setLabels(dates);
+
+    console.log(lineChartData[0].name);
+  }
 
   return (
     <div>
@@ -75,7 +113,7 @@ function LineGraph({ casesType }) {
             labels : labels,  // x-coordinates
             datasets: [       // y-coordinates
               {
-                label : 'Chart',
+                label : '$',
                 type: 'line',
                 backgroundColor: "black",
                 borderColor: "#dde26a",

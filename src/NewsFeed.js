@@ -6,7 +6,10 @@ import { useState } from 'react'
 import { Chip } from '@material-ui/core'
 import { Avatar } from '@material-ui/core'
 
-function NewsFeed() {
+function NewsFeed(props) {
+
+  const {onStockRowClick} = props;
+  const [chartTitle, setChartTitle] = useState("");   // initialise with empty string
 
   const popularTopics = [
     "Technology",
@@ -22,6 +25,7 @@ function NewsFeed() {
 
   const handleClick = () => {
     console.log('clicked');
+    // console.log(props.graphData);
   };
 
   return (
@@ -34,12 +38,14 @@ function NewsFeed() {
             </div>
 
             <div className='newsfeed_chart'>
-              <LineGraph />
-              <TimeLine />
+              <LineGraph lineChartData={props.graphData} onStockRowClick={onStockRowClick} 
+                setChartTitle={setChartTitle}
+              />
+              <TimeLine chartTitle={chartTitle}/>
             </div>
           </div>
           <div className='newsfeed_buying_section'>
-            <h2> Buying Power</h2>
+            <h2>Buying Power</h2>
             <h2>$44.11</h2>
           </div>
           <div className='newsfeed_market_section'>

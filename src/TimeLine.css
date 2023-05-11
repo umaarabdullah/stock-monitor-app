@@ -1,7 +1,10 @@
 .timeline__container {
     display:flex;
     border-bottom: 1px solid #3b4754;
+    justify-content: space-between;
+    align-items: center;
 }
+
 .timeline__wrapper {
     display:flex;    
     align-items: center;
@@ -37,4 +40,10 @@
 
 .timeline__button.active {
     border-bottom: 2px solid #dde26a;
+}
+
+.chart_title {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
 }

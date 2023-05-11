@@ -1,13 +1,25 @@
 import './StatsRow.css'
 import Swal from 'sweetalert2';
 import StockSVG from './stock.svg'
+import axios from 'axios';
 import { db } from './firebase_db';
 import firebase from 'firebase/compat/app';
 import 'firebase/compat/auth';
 import 'firebase/compat/firestore';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+
+const token = "cgrime9r01qs9ra1td0gcgrime9r01qs9ra1td10";
+const base_url = "https://finnhub.io/api/v1";
+
+const currentDate = new Date();
+const currentTimestamp = Math.floor(currentDate.getTime() / 1000);
+const januaryFirst = new Date(currentDate.getFullYear(), 0, 1);
+const januaryFirstTimestamp = Math.floor(januaryFirst.getTime() / 1000);
 
 function StatsRow(props) {
+
+  const { onBuyGetMyStock } = props;
+  const { OnSetOnStockRowClick } = props;
   
   let userId;
 
@@ -15,8 +27,6 @@ function StatsRow(props) {
   const isPositive = percentage >= 0;
   let new_shares = 0;   // Initialize new_shares with 0
   let shares_to_sell = 0;
-
-  const { onBuyGetMyStock } = props;
 
   /** Function return meanings: 
    * True = user logged in ------ False = user not logged in */
@@ -162,8 +172,6 @@ function StatsRow(props) {
     .then((doc) => {      /* Everything has to be done inside the then block */
       if (doc.exists) {
         const userData = doc.data(); // get the user data
-        // console.log(userData);
-        /** MUST use userData in the the block */
         // Traverse userData list
         const userDataList = Object.keys(userData).map((key) => ({
           key,
@@ -171,8 +179,7 @@ function StatsRow(props) {
         }));
         userDataList.forEach((item) => {
           if(item.key == props.name){
-            // console.log(item.key, item.value);
-            // console.log(item.value[1]);
+            // console.log(item.key, item.value);             // console.log(item.value[1]);
             old_shares = parseInt(item.value[1]);
             shares_to_sell = parseInt(shares_to_sell);
             shares_to_sell = old_shares - shares_to_sell;
@@ -215,17 +222,52 @@ function StatsRow(props) {
 
   };
 
+  // API Call for stock candles i.e historical data (1Y (Each Day), Monthly, Weekly, Per minute (Live))
+  const getHistoricalStockData = (stock) => {
+    return axios
+      .get(`${base_url}/stock/candle?symbol=${stock}&resolution=D&from=${januaryFirstTimestamp}&to=${currentTimestamp}&token=${token}`)   // resolution for daily intervalled candles and time from janurary first to current
+      .catch((error) => {
+        console.error("Error", error.message);
+      });
+  };
+
+  // Handles Sending graph data to linechart from statrow
+  const getGraphData = async () => {
+    
+    let tempData = [];
+    try {
+      const res = await getHistoricalStockData(props.name);
+      // console.log(res);
+      tempData.push({
+        name: props.name,
+        data: res
+      });
+      
+      console.log(`In getGraphData: ${tempData[0].name}`);
+      props.onSetGraphData(tempData);   // pass to graphData i.e stock name to newsfeed 
+      
+      // needs to change each time to trigger useEffect of statsRow
+      OnSetOnStockRowClick(props.name);    // props function redirects to linechart 
+    } 
+    catch(err) {
+      console.error(err);
+    }
+  }
+  async function handleRowClick() {
+    getGraphData();   // API Call to fetch stock candle data by Resolution:Day 
+  }
+
   return (
-    <div className="row" >
+    <div className="row">
         <div className='buy_button_container'>
           {!props.shares &&
             <button id='buy_button' className='button-37' onClick={buyStock}>Buy</button>
           }
-          {props.shares &&
+          {props.shares > 0 &&
             <button id='sell_button' className='button-37' onClick={sellStock}>Sell</button>
           }
         </div>
-        <div className="row_intro">
+        <div className="row_intro" onClick={handleRowClick}>
             <h1>{props.name}</h1>
             <p>{props.shares && 
               (props.shares + " Shares")

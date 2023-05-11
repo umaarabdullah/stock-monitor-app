@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import './Stats.css'
 import axios from 'axios';
 import StatsRow from './StatsRow';
@@ -10,18 +10,15 @@ import 'firebase/compat/firestore'
 const token = "cgrime9r01qs9ra1td0gcgrime9r01qs9ra1td10";
 const base_url = "https://finnhub.io/api/v1";
 
-const currentDate = new Date();
-const currentTimestamp = Math.floor(currentDate.getTime() / 1000);
-const januaryFirst = new Date(currentDate.getFullYear(), 0, 1);
-const januaryFirstTimestamp = Math.floor(januaryFirst.getTime() / 1000);
-
 const stocksList = ["AAPL", "MSFT", "TSLA", "META", "BABA", "UBER", "DIS", "SBUX", "AMZN", "NIO", "IBM"];
 
 function Stats(props) {
 
+  const {OnSetOnStockRowClick} = props;
+  const {onSetGraphData} = props;
+
   const [stockData, setStockData] = useState([]);
   const [myStocks, setMyStocks] = useState([]);
-  const [stockCandles, setStockCandles] = useState([]);
 
   // Fetch myStock data from Firebase 
   async function getMyStocks () {
@@ -92,22 +89,29 @@ function Stats(props) {
       });
   };
 
-  // API Call for stock candles i.e historical data (1Y (Each Day), Monthly, Weekly, Per minute (Live))
-  const getHistoricalStockData = (stock) => {
-    return axios
-      .get(`${base_url}/stock/candle?symbol=${stock}&resolution=D&from=${januaryFirstTimestamp}&to=${currentTimestamp}&token=${token}`)   // resolution for daily intervalled candles and time from janurary first to current
-      .catch((error) => {
-        console.error("Error", error.message);
-      });
-  };
+  const statsContainerRef = useRef(null);
+
+  useEffect(() => {
+
+    function handleClickOutside(event) {
+      if (statsContainerRef.current && !statsContainerRef.current.contains(event.target)) {
+        // Click outside of Stat container detected
+        // console.log('click outside Stat container');
+        OnSetOnStockRowClick(false);    // pass false to bind default data to the linechart ***props function redirects to linechart***
+      }
+    }
+
+    document.addEventListener('click', handleClickOutside);
+
+    return () => {
+      document.removeEventListener('click', handleClickOutside);
+    };
+  }, [statsContainerRef]);
   
   useEffect(() => {
 
     let tempStocksData = [];
-    let tempHistoricalStockData = [];
-
     let promises = [];
-    let historicalPromise = [];
 
     // Get user stock data from firebase
     getMyStocks();
@@ -132,30 +136,11 @@ function Stats(props) {
         console.log('Stock Quota Data Fetched Successfully');
       });
 
-    /**  Stock Candle API CAll **/
-    // In this API call the attribute 'c' means closing price
-    stocksList.map((stock) => {
-      historicalPromise.push(
-        getHistoricalStockData(stock)
-        .then((res) => {
-          // console.log(res);
-          tempHistoricalStockData.push({
-            name: stock,
-            ...res.data
-          });
-        })
-      )
-    });
-    Promise.all(historicalPromise).then(()=>{
-      setStockCandles(tempHistoricalStockData);
-      console.log('Stock Candle Data Fetched Successfully');
-    });
-
   }, []);
 
   return (
     <div className='stats'>
-        <div className='stats_container'>
+        <div ref={statsContainerRef} className='stats_container'>
           <div className='stats_header'>
             <p onClick={getMyStocks}>Stocks</p>
           </div>
@@ -169,6 +154,8 @@ function Stats(props) {
                   openPrice={stock.info.o}
                   shares={stock.shares}
                   price={stock.info.c}
+                  onSetGraphData = {onSetGraphData}
+                  OnSetOnStockRowClick = {OnSetOnStockRowClick}
                 />
               ))}
             </div>
@@ -177,7 +164,7 @@ function Stats(props) {
             <p>Lists</p>
           </div>
           <div className='stats_content'>
-            <div className='stats_rows'>
+            <div className='stats_rows' >
               {stockData.map((stock) => (
                 <StatsRow
                   onBuyGetMyStock = {getMyStocks}
@@ -186,6 +173,8 @@ function Stats(props) {
                   name={stock.name}
                   openPrice={stock.o}
                   price={stock.c}
+                  onSetGraphData = {onSetGraphData}
+                  OnSetOnStockRowClick = {OnSetOnStockRowClick}
                 />
               ))}
             </div>
