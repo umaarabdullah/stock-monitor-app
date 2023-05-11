@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import './TimeLine.css'
 
-function TimeLine() {
+function TimeLine(props) {
 
   const [isActive, setIsActive] = useState(false);
 

@@ -6,7 +6,7 @@ import { db } from './firebase_db';
 import firebase from 'firebase/compat/app';
 import 'firebase/compat/auth';
 import 'firebase/compat/firestore';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 const token = "cgrime9r01qs9ra1td0gcgrime9r01qs9ra1td10";
 const base_url = "https://finnhub.io/api/v1";
@@ -17,8 +17,6 @@ const januaryFirst = new Date(currentDate.getFullYear(), 0, 1);
 const januaryFirstTimestamp = Math.floor(januaryFirst.getTime() / 1000);
 
 function StatsRow(props) {
-
-  const [stockRowClick, setStockRowClick] = useState(false);
 
   const { onBuyGetMyStock } = props;
   const { OnSetOnStockRowClick } = props;
@@ -248,26 +246,18 @@ function StatsRow(props) {
         data: res
       });
       
-      console.log('stockrow histtempData');
-      console.log(tempData);
+      console.log(`In getGraphData: ${tempData[0].name}`);
       props.onSetGraphData(tempData);   // pass to graphData i.e stock name to newsfeed 
       
-      // needs to change each time to trigger useEffect of linechart
-      console.log('stockRowClick before');
-      console.log(stockRowClick);
-      setStockRowClick(!stockRowClick);
-      OnSetOnStockRowClick(stockRowClick);    // props function redirects to linechart  
-      console.log('stockRowClick after');
-      console.log(stockRowClick);
+      // needs to change each time to trigger useEffect of statsRow
+      OnSetOnStockRowClick(props.name);    // props function redirects to linechart 
     } 
     catch(err) {
       console.error(err);
     }
   }
   async function handleRowClick() {
-    
-    getGraphData();   // API Call to fetch stock candle data by Resolution:Day
-
+    getGraphData();   // API Call to fetch stock candle data by Resolution:Day 
   }
 
   return (

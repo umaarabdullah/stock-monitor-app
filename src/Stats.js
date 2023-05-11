@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import './Stats.css'
 import axios from 'axios';
 import StatsRow from './StatsRow';
@@ -88,6 +88,25 @@ function Stats(props) {
         console.error("Error", error.message);
       });
   };
+
+  const statsContainerRef = useRef(null);
+
+  useEffect(() => {
+
+    function handleClickOutside(event) {
+      if (statsContainerRef.current && !statsContainerRef.current.contains(event.target)) {
+        // Click outside of Stat container detected
+        console.log('click outside Stat container');
+        OnSetOnStockRowClick(false);    // pass false to bind default data to the linechart ***props function redirects to linechart***
+      }
+    }
+
+    document.addEventListener('click', handleClickOutside);
+
+    return () => {
+      document.removeEventListener('click', handleClickOutside);
+    };
+  }, [statsContainerRef]);
   
   useEffect(() => {
 
@@ -121,7 +140,7 @@ function Stats(props) {
 
   return (
     <div className='stats'>
-        <div className='stats_container'>
+        <div ref={statsContainerRef} className='stats_container'>
           <div className='stats_header'>
             <p onClick={getMyStocks}>Stocks</p>
           </div>

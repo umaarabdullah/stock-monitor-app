@@ -52,11 +52,10 @@ function LineGraph(props) {
 
   useEffect(() => {
 
-    console.log('onStockRowClick');
-    console.log(onStockRowClick);
+    console.log(`row clicked: ${onStockRowClick}`);
     
     if(onStockRowClick){
-      handleGraphDataByDay();
+      handleGraphData();
     }
     else{
       handleDefaultGraphData();
@@ -82,7 +81,7 @@ function LineGraph(props) {
     setLabels(xLabels);
   }
 
-  function handleGraphDataByDay(){
+  function handleGraphData(){
     
     let graphdata = [];
     console.log(lineChartData);
