@@ -85,6 +85,7 @@ function LineGraph(props) {
   function handleGraphDataByDay(){
     
     let graphdata = [];
+    console.log(lineChartData);
     graphdata = lineChartData[0].data.data.c;     // c means closing prices
     setData(graphdata);
 

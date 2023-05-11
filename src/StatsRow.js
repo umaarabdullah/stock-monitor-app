@@ -18,7 +18,7 @@ const januaryFirstTimestamp = Math.floor(januaryFirst.getTime() / 1000);
 
 function StatsRow(props) {
 
-  const [stockRowClick, setStockRowClick] = useState(true);
+  const [stockRowClick, setStockRowClick] = useState(false);
 
   const { onBuyGetMyStock } = props;
   const { OnSetOnStockRowClick } = props;
@@ -247,25 +247,31 @@ function StatsRow(props) {
         name: props.name,
         data: res
       });
+      
+      console.log('stockrow histtempData');
+      console.log(tempData);
       props.onSetGraphData(tempData);   // pass to graphData i.e stock name to newsfeed 
-    } catch(err) {
+      
+      // needs to change each time to trigger useEffect of linechart
+      console.log('stockRowClick before');
+      console.log(stockRowClick);
+      setStockRowClick(!stockRowClick);
+      OnSetOnStockRowClick(stockRowClick);    // props function redirects to linechart  
+      console.log('stockRowClick after');
+      console.log(stockRowClick);
+    } 
+    catch(err) {
       console.error(err);
     }
   }
   async function handleRowClick() {
     
     getGraphData();   // API Call to fetch stock candle data by Resolution:Day
-    
-    // needs to change each time to trigger useEffect of linechart
-    setStockRowClick(!stockRowClick);
-    OnSetOnStockRowClick(stockRowClick);  
-    console.log('stockRowClick');
-    console.log(stockRowClick);
-  
+
   }
 
   return (
-    <div className="row" onClick={handleRowClick}>
+    <div className="row">
         <div className='buy_button_container'>
           {!props.shares &&
             <button id='buy_button' className='button-37' onClick={buyStock}>Buy</button>
@@ -274,7 +280,7 @@ function StatsRow(props) {
             <button id='sell_button' className='button-37' onClick={sellStock}>Sell</button>
           }
         </div>
-        <div className="row_intro">
+        <div className="row_intro" onClick={handleRowClick}>
             <h1>{props.name}</h1>
             <p>{props.shares && 
               (props.shares + " Shares")
