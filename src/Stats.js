@@ -14,9 +14,11 @@ const stocksList = ["AAPL", "MSFT", "TSLA", "META", "BABA", "UBER", "DIS", "SBUX
 
 function Stats(props) {
 
+  const {OnSetOnStockRowClick} = props;
+  const {onSetGraphData} = props;
+
   const [stockData, setStockData] = useState([]);
   const [myStocks, setMyStocks] = useState([]);
-  const [stockCandles, setStockCandles] = useState([]);
 
   // Fetch myStock data from Firebase 
   async function getMyStocks () {
@@ -90,10 +92,7 @@ function Stats(props) {
   useEffect(() => {
 
     let tempStocksData = [];
-    let tempHistoricalStockData = [];
-
     let promises = [];
-    let historicalPromise = [];
 
     // Get user stock data from firebase
     getMyStocks();
@@ -136,7 +135,8 @@ function Stats(props) {
                   openPrice={stock.info.o}
                   shares={stock.shares}
                   price={stock.info.c}
-                  onSetGraphData = {props.onSetGraphData}
+                  onSetGraphData = {onSetGraphData}
+                  OnSetOnStockRowClick = {OnSetOnStockRowClick}
                 />
               ))}
             </div>
@@ -154,7 +154,8 @@ function Stats(props) {
                   name={stock.name}
                   openPrice={stock.o}
                   price={stock.c}
-                  onSetGraphData = {props.onSetGraphData}
+                  onSetGraphData = {onSetGraphData}
+                  OnSetOnStockRowClick = {OnSetOnStockRowClick}
                 />
               ))}
             </div>

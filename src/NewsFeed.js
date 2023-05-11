@@ -8,6 +8,8 @@ import { Avatar } from '@material-ui/core'
 
 function NewsFeed(props) {
 
+  const {onStockRowClick} = props;
+
   const popularTopics = [
     "Technology",
     "Top Movies",
@@ -35,7 +37,7 @@ function NewsFeed(props) {
             </div>
 
             <div className='newsfeed_chart'>
-              <LineGraph lineChartData={props.graphData}/>
+              <LineGraph lineChartData={props.graphData} onStockRowClick={onStockRowClick}/>
               <TimeLine />
             </div>
           </div>

@@ -43,23 +43,26 @@ const options = {
 
 function LineGraph(props) {
 
-  const { lineChartData } = props;  
+  const { lineChartData } = props;
+  const { onStockRowClick } = props;
 
   const [data, setData] = useState([]);
   const [labels, setLabels] = useState([]);
-  const [graphClicked, setGraphClicked] = useState(false);
   const [graphDataByDay, setGraphDataByDay] = useState(false);
 
   useEffect(() => {
+
+    console.log('onStockRowClick');
+    console.log(onStockRowClick);
     
-    if(graphDataByDay){
+    if(onStockRowClick){
       handleGraphDataByDay();
     }
     else{
       handleDefaultGraphData();
     }
 
-  }, [graphClicked]);
+  }, [onStockRowClick]);
 
 
   function handleDefaultGraphData() {
@@ -79,51 +82,28 @@ function LineGraph(props) {
     setLabels(xLabels);
   }
 
-  // Binds stock data to the linechart
-  function handleGraphClick(){
-
-    setGraphDataByDay(true);
-    
-    // To trigger useEffect everytime graph is clicked
-    setGraphClicked(!graphClicked);
-
-  }
-
   function handleGraphDataByDay(){
+    
+    let graphdata = [];
+    graphdata = lineChartData[0].data.data.c;     // c means closing prices
+    setData(graphdata);
 
     const currentDate = new Date();
     const januaryFirst = new Date(currentDate.getFullYear(), 0, 1);
-    
     let dates = [];
     let date = januaryFirst;
-
+    // Generate the dates of each day from januaryFirst to current
     while (date <= currentDate) {
       dates.push(date.toString());
       date = new Date(date.getFullYear(), date.getMonth(), date.getDate() + 1);
     }
     setLabels(dates);
-    // console.log(dates[0]); // output the dates as an array of strings
-    
-    let graphdata = [];
 
-    graphdata = lineChartData[0].data.data.c;     // c means closing prices
-
-    setData(graphdata);
-
-    // let xLabels = [];
-    // for(var i = 0; i < 100; i++){
-    //   let date = new Date();
-    //   date.setHours(0,0,0,0);
-    //   date.setDate(i);
-    //   xLabels.push(date.toString());
-    // }
-    
     console.log(lineChartData[0].name);
-
   }
 
   return (
-    <div onClick={handleGraphClick}>
+    <div>
       {data?.length > 0 && (
         <Line
           data={{

@@ -18,7 +18,10 @@ const januaryFirstTimestamp = Math.floor(januaryFirst.getTime() / 1000);
 
 function StatsRow(props) {
 
-  const [stockCandle, setStockCandle] = useState([]);
+  const [stockRowClick, setStockRowClick] = useState(true);
+
+  const { onBuyGetMyStock } = props;
+  const { OnSetOnStockRowClick } = props;
   
   let userId;
 
@@ -26,8 +29,6 @@ function StatsRow(props) {
   const isPositive = percentage >= 0;
   let new_shares = 0;   // Initialize new_shares with 0
   let shares_to_sell = 0;
-
-  const { onBuyGetMyStock } = props;
 
   /** Function return meanings: 
    * True = user logged in ------ False = user not logged in */
@@ -237,8 +238,7 @@ function StatsRow(props) {
 
   // Handles Sending graph data to linechart from statrow
   const getGraphData = async () => {
-    console.log(januaryFirstTimestamp);
-    console.log(currentTimestamp);
+    
     let tempData = [];
     try {
       const res = await getHistoricalStockData(props.name);
@@ -253,7 +253,15 @@ function StatsRow(props) {
     }
   }
   async function handleRowClick() {
-    getGraphData();
+    
+    getGraphData();   // API Call to fetch stock candle data by Resolution:Day
+    
+    // needs to change each time to trigger useEffect of linechart
+    setStockRowClick(!stockRowClick);
+    OnSetOnStockRowClick(stockRowClick);  
+    console.log('stockRowClick');
+    console.log(stockRowClick);
+  
   }
 
   return (
