@@ -132,9 +132,6 @@ function LineGraph(props) {
       const midnight = new Date(yesterday.getFullYear(), yesterday.getMonth(), yesterday.getDate(), 0, 0, 0); 
       const midnightTimestamp = Math.floor(midnight.getTime() / 1000);       // Convert to timestamp in seconds
       const currentTimeYesterday = Math.floor(yesterday.getTime() / 1000);   // Convert to timestamp in seconds
-
-      console.log(midnight);
-      console.log(new Date(currentTimeYesterday * 1000));
       
       getGraphData(resolution, midnightTimestamp, currentTimeYesterday);
     }
