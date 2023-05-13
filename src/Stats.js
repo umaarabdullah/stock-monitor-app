@@ -138,6 +138,13 @@ function Stats(props) {
 
   }, []);
 
+  useEffect(() => {       // Trigger firebase fetch user stock data on logging In
+
+    getMyStocks();
+    
+  }, [props.onLoggedIn])
+  
+
   return (
     <div className='stats'>
         <div ref={statsContainerRef} className='stats_container'>
