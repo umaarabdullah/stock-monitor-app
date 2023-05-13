@@ -13,6 +13,7 @@ function App() {
 
   const [graphData, setGraphData] = useState([]);
   const [onStockRowClick, setOnStockRowClick] = useState(false);
+  const [timeLineButtonActiveClick, setTimeLineButtonActiveClick] = useState("");
 
 
   function handleShowLoginPage() {
@@ -40,7 +41,10 @@ function App() {
       </div>
       <div className='app_body'>
         <div className='app_container'>
-          <NewsFeed graphData={graphData} onStockRowClick={onStockRowClick}/>
+          <NewsFeed graphData={graphData} onStockRowClick={onStockRowClick} 
+            setTimeLineButtonActiveClick={setTimeLineButtonActiveClick}
+            timeLineButtonActiveClick={timeLineButtonActiveClick}
+          />
           <Stats onLoggedIn={loggedIn} onSetGraphData={setGraphData} 
             OnSetOnStockRowClick={setOnStockRowClick}
           />

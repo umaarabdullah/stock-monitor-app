@@ -97,7 +97,7 @@ function Stats(props) {
       if (statsContainerRef.current && !statsContainerRef.current.contains(event.target)) {
         // Click outside of Stat container detected
         // console.log('click outside Stat container');
-        OnSetOnStockRowClick(false);    // pass false to bind default data to the linechart ***props function redirects to linechart***
+        //OnSetOnStockRowClick(false);    // pass false to bind default data to the linechart ***props function redirects to linechart***
       }
     }
 

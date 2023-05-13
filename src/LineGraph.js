@@ -2,6 +2,10 @@ import React, { useEffect, useState } from "react";
 import Chart from 'chart.js/auto';
 import { Line } from "react-chartjs-2";
 import './LineGraph.css'
+import axios from 'axios';
+
+const token = "cgrime9r01qs9ra1td0gcgrime9r01qs9ra1td10";
+const base_url = "https://finnhub.io/api/v1";
 
 const options = {
   plugins: {
@@ -44,20 +48,22 @@ const options = {
 function LineGraph(props) {
 
   const { lineChartData } = props;
-  const { onStockRowClick } = props;
+  const { onStockRowClick } = props;    // stock name of the row clicked
   const { setChartTitle } = props;
+  const { timeLineButtonActiveClick } = props;
+  const { setActiveButton } = props;
 
   const [data, setData] = useState([]);
   const [labels, setLabels] = useState([]);
-  const [graphDataByDay, setGraphDataByDay] = useState(false);
 
   useEffect(() => {
 
-    console.log(`row clicked: ${onStockRowClick}`);
+    console.log(`row clicked linechart useEffect 1 : ${onStockRowClick}`);
     
-    if(onStockRowClick){
+    if(onStockRowClick){    // By default chart will be active with resolution: D that is daily candles
       setChartTitle(onStockRowClick.toString());
-      handleGraphData();
+      setActiveButton(2);   // set timeline button D with index=2 as active
+      handleRowClickGraphData();    // API Call for stock candle with resolution 'D'
     }
     else{
       setChartTitle('Default');
@@ -67,24 +73,25 @@ function LineGraph(props) {
   }, [onStockRowClick]);
 
 
-  function handleDefaultGraphData() {
-    // LineChart data to show by default
-    let xLabels = [];
-    let sample_data = [];
-    let value = 50;
-    for(var i = 0; i < 100; i++){
-      let date = new Date();
-      date.setHours(0,0,0,0);
-      date.setDate(i);
-      value += Math.round((Math.random() < 0.5 ? 1 : 0) * Math.random() * 10);
-      xLabels.push(date.toString());
-      sample_data.push(value);
-    }
-    setData(sample_data);
-    setLabels(xLabels);
-  }
+  useEffect(() => {
 
-  function handleGraphData(){
+    console.log('Timeline button clicked linechart useEffect 2');
+
+    if(timeLineButtonActiveClick !== 'inActive' && timeLineButtonActiveClick !== ""){
+      console.log(`Candle stock resolution ${timeLineButtonActiveClick}`);
+      setChartTitle(onStockRowClick.toString());
+      handleGraphDataOnTimelineButtonClick(timeLineButtonActiveClick);    // API call for stock candle data with different resolution
+    }
+    else{
+      setChartTitle('Default');
+      handleDefaultGraphData();
+    }
+    
+  }, [timeLineButtonActiveClick]);
+
+
+  // handles graphdata when a row_intro is clicked
+  function handleRowClickGraphData(){
     
     let graphdata = [];
     console.log(lineChartData);
@@ -104,6 +111,85 @@ function LineGraph(props) {
 
     console.log(lineChartData[0].name);
   }
+
+  
+  // Function for handling timeline button click graph change
+  async function handleGraphDataOnTimelineButtonClick(resolution) {
+    
+    if(resolution === 'Y'){       // handle 1Y timestamp differently
+      const currentDate = new Date();
+      const currentTimestamp = Math.floor(currentDate.getTime() / 1000);
+      const oneYearPreviousFromCurrentDate = new Date(currentDate.getFullYear() - 1, 0, 1); // Subtract 1 year from current year
+      const oneYearPreviousFromCurrentTimestamp = Math.floor(oneYearPreviousFromCurrentDate.getTime() / 1000);
+
+      getGraphData('D', oneYearPreviousFromCurrentTimestamp, currentTimestamp);  
+    }
+    else{                         // handle anyother timeline buttons liek LIVE, 1D, 1W, M
+      const currentDate = new Date();
+      const currentTimestamp = Math.floor(currentDate.getTime() / 1000);
+      const januaryFirst = new Date(currentDate.getFullYear(), 0, 1);
+      const januaryFirstTimestamp = Math.floor(januaryFirst.getTime() / 1000);
+      
+      getGraphData(resolution, januaryFirstTimestamp, currentTimestamp);
+    }
+
+  };
+  // Handles Sending graph data
+  const getGraphData = async (resolution, fromTimeStamp, toTimeStamp) => {
+    
+    let stockCandleData = [];
+
+    try {
+      const res = await getHistoricalStockData(onStockRowClick, resolution, fromTimeStamp, toTimeStamp);
+      // console.log(res);
+      stockCandleData.push({
+        name: onStockRowClick,
+        data: res
+      });
+      
+      /* setData */
+      // console.log(`In getGraphData linechart: ${stockCandleData[0].name}`);
+      // console.log(stockCandleData);
+      // console.log(stockCandleData[0].name);
+      // console.log(stockCandleData[0].data.data.c);
+      setData(stockCandleData[0].data.data.c);
+      
+      /* setLabels */
+      // need to set the labels of the linechart
+    } 
+    catch(err) {
+      console.error(err);
+    }
+  };
+  // API Call for stock candles i.e historical data (1Y (Each Day), Monthly, Weekly, Per minute (Live))
+  const getHistoricalStockData = async (stock, resolution, fromTimeStamp, toTimeStamp) => {
+    const url = `${base_url}/stock/candle?symbol=${stock}&resolution=${resolution}&from=${fromTimeStamp}&to=${toTimeStamp}&token=${token}`;   // resolution for daily intervalled candles and time from janurary first to current
+    console.log(url);
+    return axios
+      .get(url)
+      .catch((error) => {
+        console.error("Error", error.message);
+      });
+  };
+
+
+  function handleDefaultGraphData() {
+    // LineChart data to show by default
+    let xLabels = [];
+    let sample_data = [];
+    let value = 50;
+    for(var i = 0; i < 100; i++){
+      let date = new Date();
+      date.setHours(0,0,0,0);
+      date.setDate(i);
+      value += Math.round((Math.random() < 0.5 ? 1 : 0) * Math.random() * 10);
+      xLabels.push(date.toString());
+      sample_data.push(value);
+    }
+    setData(sample_data);
+    setLabels(xLabels);
+  }
+
 
   return (
     <div>
