@@ -69,10 +69,10 @@ function Header(props) {
                 </div>
             </div>
             <div className='header_menuItems'>
-                {/* <a href='#'>My Stocks</a> */}
+                <a href='#'>My Stocks</a>
                 <a href='#'>Portfolio</a>
-                {/* <a href='#'>Cash</a> */}
-                <a href='#'>Messages</a>
+                <a href='#'>Cash</a>
+                {/* <a href='#'>Messages</a> */}
                 <a href='#' onClick={togglemenuItemsDropdown}>Account</a>
                 {menuItemsdropdownOpen && (
                 <div className="menuItems_dropdown_content" aria-labelledby="dropdownMenuButton">

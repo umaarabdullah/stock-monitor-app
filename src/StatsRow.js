@@ -46,13 +46,15 @@ function StatsRow(props) {
   // buy stock share function. /** This function is triggered when buy button is clicked */
   async function buyStock () {
 
+    let num_shares = 0;
+
     // First check if the user is logged in
     if(!checkUserLogInStatus()){
       return;
     }
 
     // Input how many shares user wants to buy
-    const { value: num_shares } = await Swal.fire({
+    Swal.fire({
       title: `Purchase ${props.name} Stock`,
       input: 'number',
       inputLabel: 'Number of Shares',
@@ -63,9 +65,22 @@ function StatsRow(props) {
           return 'You need to write something!'
         }
       }
+    }).then((result) => {
+      if (result.isConfirmed) {
+        const inputValue = result.value;
+        num_shares = inputValue;
+        // Handle the input value when the user clicks the submit button
+        console.log('Input value:', inputValue);
+      } else {
+        // Handle the case when the user clicks the cancel button
+        console.log('User cancelled the input');
+      }
     });
 
     new_shares = num_shares;
+
+    const num_shares_tmp = new_shares;
+
     console.log(`Number of shares purchased ${new_shares}`);
     
     // Authenticate with firebase
@@ -117,10 +132,10 @@ function StatsRow(props) {
         .catch((error) => {
           console.error('Error updating user data:', error);
         });
-      if (num_shares) {
+      if (num_shares_tmp) {
         // sweetalert success pop up
         Swal.fire({
-          title: `${num_shares} Shares of ${props.name} Stock has been Purchased`,
+          title: `${num_shares_tmp} Shares of ${props.name} Stock has been Purchased`,
           icon: 'success',
           text: props.name,
         });
@@ -138,9 +153,11 @@ function StatsRow(props) {
   };
 
   async function sellStock () {
+    
+    let num_shares = 0;
 
     // Input how many shares user wants to sell
-    const { value: num_shares } = await Swal.fire({
+    Swal.fire({
       title: `Sell ${props.name} Stock`,
       input: 'number',
       inputLabel: 'Number of Shares',
@@ -151,9 +168,22 @@ function StatsRow(props) {
           return 'You need to write something!'
         }
       }
+    }).then((result) => {
+      if (result.isConfirmed) {
+        const inputValue = result.value;
+        num_shares = inputValue;
+        // Handle the input value when the user clicks the submit button
+        console.log('Input value:', inputValue);
+      } else {
+        // Handle the case when the user clicks the cancel button
+        console.log('User cancelled the input');
+      }
     });
-
+    
     shares_to_sell = num_shares;
+  
+    const num_shares_tmp = shares_to_sell;
+
     console.log(`Number of shares to sell ${shares_to_sell}`);
 
     // Authenticate with firebase
@@ -202,10 +232,10 @@ function StatsRow(props) {
           console.error('Error updating user data:', error);
         });
 
-      if (num_shares) {
+      if (num_shares_tmp) {
         // sweetalert success pop up
         Swal.fire({
-          title: `${num_shares} Shares of ${props.name} Stock has been Sold`,
+          title: `${num_shares_tmp} Shares of ${props.name} Stock has been Sold`,
           icon: 'success',
           text: props.name,
         });
