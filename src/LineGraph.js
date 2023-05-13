@@ -124,7 +124,21 @@ function LineGraph(props) {
 
       getGraphData('D', oneYearPreviousFromCurrentTimestamp, currentTimestamp);  
     }
-    else{                         // handle anyother timeline buttons liek LIVE, 1D, 1W, M
+    else if(resolution === '1'){    // handle live timeline button differently
+      /* live means yesterday live data */
+      const currentDate = new Date(); 
+      const yesterday = new Date(currentDate); 
+      yesterday.setDate(currentDate.getDate() - 1); 
+      const midnight = new Date(yesterday.getFullYear(), yesterday.getMonth(), yesterday.getDate(), 0, 0, 0); 
+      const midnightTimestamp = Math.floor(midnight.getTime() / 1000);       // Convert to timestamp in seconds
+      const currentTimeYesterday = Math.floor(yesterday.getTime() / 1000);   // Convert to timestamp in seconds
+
+      console.log(midnight);
+      console.log(new Date(currentTimeYesterday * 1000));
+      
+      getGraphData(resolution, midnightTimestamp, currentTimeYesterday);
+    }
+    else{                         // handle anyother timeline buttons 1D, 1W, M
       const currentDate = new Date();
       const currentTimestamp = Math.floor(currentDate.getTime() / 1000);
       const januaryFirst = new Date(currentDate.getFullYear(), 0, 1);
@@ -149,13 +163,46 @@ function LineGraph(props) {
       
       /* setData */
       // console.log(`In getGraphData linechart: ${stockCandleData[0].name}`);
-      // console.log(stockCandleData);
-      // console.log(stockCandleData[0].name);
-      // console.log(stockCandleData[0].data.data.c);
       setData(stockCandleData[0].data.data.c);
       
       /* setLabels */
-      // need to set the labels of the linechart
+      const fromDate = new Date(fromTimeStamp * 1000);
+      const toDate = new Date(toTimeStamp * 1000);
+      const allDates = [];
+      let currentDate = new Date(fromDate);
+
+      // Find the dates required as per requested data resolution
+      if(resolution === 'D'){   // Daily/Year
+        while (currentDate <= toDate) {
+          allDates.push(new Date(currentDate));
+          currentDate.setDate(currentDate.getDate() + 1);    
+        }
+      }
+      else if(resolution === 'W'){   // Weekly
+        const oneWeek = 7 * 24 * 60 * 60 * 1000; // One week in milliseconds
+        while (currentDate <= toDate) {
+          allDates.push(new Date(currentDate));
+          currentDate.setTime(currentDate.getTime() + oneWeek);
+        }
+      }
+      else if(resolution === 'M'){   // Monthly
+        while (currentDate <= toDate) {
+          allDates.push(new Date(currentDate));
+          currentDate.setMonth(currentDate.getMonth() + 1);
+        }
+      }
+      else if(resolution === '1'){   // Live
+        const oneMinute = 60; // in seconds
+        let currentTimestamp = fromTimeStamp;
+        while (currentTimestamp <= toTimeStamp) {
+            const currentDate = new Date(currentTimestamp * 1000);
+            allDates.push(currentDate);
+            currentTimestamp += oneMinute;
+        }
+      }
+      // console.log(allDates);
+      setLabels(allDates);
+
     } 
     catch(err) {
       console.error(err);

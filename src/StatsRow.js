@@ -232,17 +232,6 @@ function StatsRow(props) {
         console.error("Error", error.message);
       });
   };
-
-  // useEffect(() => {
-
-  //   // call getGraphData with timelinebuttonactiveclick as resolution parameter
-  //   if(timeLineButtonActiveClick !== ''){      // check if it is an empty string or not which would mean an already active button was clicked no linechart would have to show default value
-  //     console.log(timeLineButtonActiveClick);
-  //     console.log(props.name);
-  //     // getGraphData(timeLineButtonActiveClick);  
-  //   }
-
-  // }, [timeLineButtonActiveClick, props.name]);
   
 
   // Handles Sending graph data to linechart from statrow
