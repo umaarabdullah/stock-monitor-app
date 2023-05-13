@@ -223,30 +223,33 @@ function StatsRow(props) {
   };
 
   // API Call for stock candles i.e historical data (1Y (Each Day), Monthly, Weekly, Per minute (Live))
-  const getHistoricalStockData = (stock) => {
+  const getHistoricalStockData = async (stock, resolution) => {
+    const url = `${base_url}/stock/candle?symbol=${stock}&resolution=${resolution}&from=${januaryFirstTimestamp}&to=${currentTimestamp}&token=${token}`;   // resolution for daily intervalled candles and time from janurary first to current
+    console.log(url);
     return axios
-      .get(`${base_url}/stock/candle?symbol=${stock}&resolution=D&from=${januaryFirstTimestamp}&to=${currentTimestamp}&token=${token}`)   // resolution for daily intervalled candles and time from janurary first to current
+      .get(url)
       .catch((error) => {
         console.error("Error", error.message);
       });
   };
+  
 
   // Handles Sending graph data to linechart from statrow
-  const getGraphData = async () => {
+  const getGraphData = async (resolution) => {
     
     let tempData = [];
     try {
-      const res = await getHistoricalStockData(props.name);
+      const res = await getHistoricalStockData(props.name, resolution);
       // console.log(res);
       tempData.push({
         name: props.name,
         data: res
       });
       
-      console.log(`In getGraphData: ${tempData[0].name}`);
+      console.log(`In getGraphData statsRow: ${tempData[0].name}`);
       props.onSetGraphData(tempData);   // pass to graphData i.e stock name to newsfeed 
       
-      // needs to change each time to trigger useEffect of statsRow
+      // needs to change each time to trigger useEffect of linechart
       OnSetOnStockRowClick(props.name);    // props function redirects to linechart 
     } 
     catch(err) {
@@ -254,7 +257,7 @@ function StatsRow(props) {
     }
   }
   async function handleRowClick() {
-    getGraphData();   // API Call to fetch stock candle data by Resolution:Day 
+    getGraphData('D');   // API Call to fetch stock candle data by Resolution:Day 
   }
 
   return (

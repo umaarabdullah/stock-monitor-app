@@ -8,8 +8,12 @@ import { Avatar } from '@material-ui/core'
 
 function NewsFeed(props) {
 
-  const {onStockRowClick} = props;
+  const { onStockRowClick } = props;
+  const { setTimeLineButtonActiveClick } = props;
+  const { timeLineButtonActiveClick } = props;
+
   const [chartTitle, setChartTitle] = useState("");   // initialise with empty string
+  const [activeButton, setActiveButton] = useState(0);
 
   const popularTopics = [
     "Technology",
@@ -40,8 +44,14 @@ function NewsFeed(props) {
             <div className='newsfeed_chart'>
               <LineGraph lineChartData={props.graphData} onStockRowClick={onStockRowClick} 
                 setChartTitle={setChartTitle}
+                timeLineButtonActiveClick={timeLineButtonActiveClick}
+                setActiveButton={setActiveButton}
               />
-              <TimeLine chartTitle={chartTitle}/>
+              <TimeLine chartTitle={chartTitle} 
+                setTimeLineButtonActiveClick={setTimeLineButtonActiveClick}
+                activeButton={activeButton}
+                setActiveButton={setActiveButton}
+              />
             </div>
           </div>
           <div className='newsfeed_buying_section'>
@@ -50,8 +60,8 @@ function NewsFeed(props) {
           </div>
           <div className='newsfeed_market_section'>
             <div className='newsfeed_market_box'>
-              <p> Markets Closed </p>
-              <h1> Eid Mubarak </h1>
+              <p> Markets Open </p>
+              <h1> Trade Away </h1>
             </div>
           </div>
           <div className='newsfeed_popularlists_sections'>
