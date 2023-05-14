@@ -37,8 +37,8 @@ function NewsFeed(props) {
         <div className='newsfeed_container'>
           <div className='newsfeed_chartSection'>
             <div className='newsfeed_portfolio'>
-              <h1>$114,234</h1>
-              <p> +$53.34 (+0.05%) Today </p>
+              <h1>$TotalHoldingsValue </h1>
+              <p> +$Profit/Loss in $ (+profil/loss percentage  in %) Today </p>
             </div>
 
             <div className='newsfeed_chart'>

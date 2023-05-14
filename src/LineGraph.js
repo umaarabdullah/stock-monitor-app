@@ -87,26 +87,28 @@ function LineGraph(props) {
       handleDefaultGraphData();
     }
 
+    /**  Causes a problem introduces delay across all timeline buttons **/
     // Function to be executed every 3 minutes
-    const myEffect = () => {
-      console.log(`Candle stock resolution ${timeLineButtonActiveClick}`);
-      setChartTitle(onStockRowClick.toString());
-      handleGraphDataOnTimelineButtonClick(timeLineButtonActiveClick);    // API call for stock candle data with different resolution
-    };
-    // Call the effect initially if the condition is met
-    if (timeLineButtonActiveClick === "1") {
-      myEffect();
-    }
-    // Set up the interval to run the effect every 1 minutes
-    const interval = setInterval(() => {
-      if (timeLineButtonActiveClick === "1") {
-        myEffect();
-      }
-    }, 1* 60 * 1000);
-    // Clean up the interval when the component is unmounted or the dependency array changes
-    return () => {
-      clearInterval(interval);
-    };
+    // const myEffect = () => {
+    //   console.log(`Candle stock resolution ${timeLineButtonActiveClick}`);
+    //   setChartTitle(onStockRowClick.toString());
+    //   handleGraphDataOnTimelineButtonClick(timeLineButtonActiveClick);    // API call for stock candle data with different resolution
+    // };
+    // // Call the effect initially if the condition is met
+    // if (timeLineButtonActiveClick === "1") {
+    //   myEffect();
+    // }
+    // // Set up the interval to run the effect every 1 minutes
+    // if (timeLineButtonActiveClick === "1") {
+    //   const interval = setInterval(() => {
+    //     myEffect();
+    //   }, 1* 60 * 1000);
+      
+    //   // Clean up the interval when the component is unmounted or the dependency array changes
+    //   return () => {
+    //     clearInterval(interval);
+    //   };
+    // }
     
   }, [timeLineButtonActiveClick]);
 
