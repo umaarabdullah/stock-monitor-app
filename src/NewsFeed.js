@@ -11,6 +11,7 @@ function NewsFeed(props) {
   const { onStockRowClick } = props;
   const { setTimeLineButtonActiveClick } = props;
   const { timeLineButtonActiveClick } = props;
+  const { TotalHoldingsValue } = props;
 
   const [chartTitle, setChartTitle] = useState("");   // initialise with empty string
   const [activeButton, setActiveButton] = useState(0);
@@ -37,17 +38,26 @@ function NewsFeed(props) {
         <div className='newsfeed_container'>
           <div className='newsfeed_chartSection'>
             <div className='newsfeed_portfolio'>
-              <h1>$TotalHoldingsValue </h1>
-              <p> +$Profit/Loss in $ (+profil/loss percentage  in %) Today </p>
+              {TotalHoldingsValue !== 0 ? (
+                <h1>${TotalHoldingsValue}</h1>
+              ) : (
+                <h1>Total Holdings Value</h1>
+              )}
+              {/* +/-Profit/Loss in $ +/-(Profit/Loss in %) Today*/}
+              <p>Profit/Los - Today</p>
             </div>
 
             <div className='newsfeed_chart'>
-              <LineGraph lineChartData={props.graphData} onStockRowClick={onStockRowClick} 
+              <LineGraph 
+                lineChartData={props.graphData} 
+                onStockRowClick={onStockRowClick} 
                 setChartTitle={setChartTitle}
                 timeLineButtonActiveClick={timeLineButtonActiveClick}
+                setTimeLineButtonActiveClick={setTimeLineButtonActiveClick}
                 setActiveButton={setActiveButton}
               />
-              <TimeLine chartTitle={chartTitle} 
+              <TimeLine 
+                chartTitle={chartTitle} 
                 setTimeLineButtonActiveClick={setTimeLineButtonActiveClick}
                 activeButton={activeButton}
                 setActiveButton={setActiveButton}

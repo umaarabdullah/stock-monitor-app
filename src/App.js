@@ -14,6 +14,7 @@ function App() {
   const [graphData, setGraphData] = useState([]);
   const [onStockRowClick, setOnStockRowClick] = useState(false);
   const [timeLineButtonActiveClick, setTimeLineButtonActiveClick] = useState("");
+  const [TotalHoldingsValue, setTotalHoldingsValue] = useState(0.0);   // Initialize with 0.0
 
 
   function handleShowLoginPage() {
@@ -35,18 +36,32 @@ function App() {
 
   return (
     <div className="App">
-      {showLoginPage && <LoginPage onHideLoginPage={handleHideLoginPage} onCancelLoginPage={handleCancelLoginPage}/>}
+      {showLoginPage && 
+                        <LoginPage 
+                          onHideLoginPage={handleHideLoginPage} 
+                          onCancelLoginPage={handleCancelLoginPage}
+                        />}
       <div className='app_header'>
-        <Header onShowLoginPage={handleShowLoginPage} onShowLoggedIn={loggedIn} onLoggedOut={handleOnLoggedOut}/> 
+        <Header 
+          onShowLoginPage={handleShowLoginPage} 
+          onShowLoggedIn={loggedIn} 
+          onLoggedOut={handleOnLoggedOut}
+        /> 
       </div>
       <div className='app_body'>
         <div className='app_container'>
-          <NewsFeed graphData={graphData} onStockRowClick={onStockRowClick} 
+          <NewsFeed 
+            graphData={graphData} 
+            onStockRowClick={onStockRowClick} 
             setTimeLineButtonActiveClick={setTimeLineButtonActiveClick}
             timeLineButtonActiveClick={timeLineButtonActiveClick}
+            TotalHoldingsValue={TotalHoldingsValue}
           />
-          <Stats onLoggedIn={loggedIn} onSetGraphData={setGraphData} 
+          <Stats 
+            onLoggedIn={loggedIn} 
+            onSetGraphData={setGraphData} 
             OnSetOnStockRowClick={setOnStockRowClick}
+            setTotalHoldingsValue={setTotalHoldingsValue}
           />
         </div>
       </div>
