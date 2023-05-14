@@ -12,6 +12,8 @@ function TimeLine(props) {
   **  +Ve means active and -Ve means not active
   */
   const handleButtonClick = (index) => {
+
+    console.log(`non-active button clicked ${index}`);
     
     // if index is +ve it means a non-active button was clicked
     if(index > 0){  

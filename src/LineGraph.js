@@ -51,6 +51,7 @@ function LineGraph(props) {
   const { onStockRowClick } = props;    // stock name of the row clicked
   const { setChartTitle } = props;
   const { timeLineButtonActiveClick } = props;
+  const { setTimeLineButtonActiveClick } = props;
   const { setActiveButton } = props;
 
   const [data, setData] = useState([]);
@@ -62,7 +63,8 @@ function LineGraph(props) {
     
     if(onStockRowClick){    // By default chart will be active with resolution: D that is daily candles
       setChartTitle(onStockRowClick.toString());
-      setActiveButton(2);   // set timeline button D with index=2 as active
+      setActiveButton(2);           // set timeline button D with index=2 as active
+      setTimeLineButtonActiveClick("D");
       handleRowClickGraphData();    // API Call for stock candle with resolution 'D'
     }
     else{
@@ -116,21 +118,20 @@ function LineGraph(props) {
   // handles graphdata when a row_intro is clicked
   function handleRowClickGraphData(){
     
+    /** setData */
     let graphdata = [];
     console.log(lineChartData);
     graphdata = lineChartData[0].data.data.c;     // c means closing prices
     setData(graphdata);
 
-    const currentDate = new Date();
-    const januaryFirst = new Date(currentDate.getFullYear(), 0, 1);
-    let dates = [];
-    let date = januaryFirst;
-    // Generate the dates of each day from januaryFirst to current
-    while (date <= currentDate) {
-      dates.push(date.toString());
-      date = new Date(date.getFullYear(), date.getMonth(), date.getDate() + 1);
-    }
-    setLabels(dates);
+    /** setLabels */
+    let allDates = [];
+    // loop through the timestamps returned from the API Call
+    lineChartData[0].data.data.t.forEach((currentTimeStamp) => {
+      const currentDate = new Date(currentTimeStamp*1000);
+      allDates.push(currentDate);
+    });
+    setLabels(allDates);
 
     console.log(lineChartData[0].name);
   }

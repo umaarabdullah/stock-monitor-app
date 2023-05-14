@@ -16,6 +16,7 @@ function Stats(props) {
 
   const {OnSetOnStockRowClick} = props;
   const {onSetGraphData} = props;
+  const {setTotalHoldingsValue} = props;
 
   const [stockData, setStockData] = useState([]);
   const [myStocks, setMyStocks] = useState([]);
@@ -35,7 +36,7 @@ function Stats(props) {
     .then((doc) => {      /* Everything has to be done inside the then block */
       if (doc.exists) {
         let promises = [];
-        let tempData = [];
+        let userStockData = [];
         const userData = doc.data(); // get the user data
         // console.log(userData);
         /** MUST use userData in the the block */
@@ -50,10 +51,10 @@ function Stats(props) {
             console.log(item.key, item.value);
             promises.push(getStockData(item.key)
             .then(res => {
-              tempData.push({
+              userStockData.push({
                 id: doc.id,               // firestore database key
                 name: item.key,           // firestore feteched data company name
-                shares: item.value[1],    // shares
+                shares: item.value[1],    // item[1] is shares item[0] is the company name
                 info: res.data            // API Response from finnhub
               })
             }));
@@ -61,10 +62,32 @@ function Stats(props) {
           }
         });
         Promise.all(promises).then(()=>{
-          // console.log(tempData);
+          console.log(userStockData);
           /* Sort based on number of shares */
-          tempData.sort(function(a, b){return b.shares - a.shares});  // Sort data based on number of shares already purchased by the user
-          setMyStocks(tempData);
+          userStockData.sort(function(a, b){return b.shares - a.shares});  // Sort data based on number of shares already purchased by the user
+          setMyStocks(userStockData);
+
+          // calculate holdings value
+          let TotalHoldingsValue = 0;
+          userStockData.forEach((stock) => {
+            // Access individual stock properties
+            const stockSymbol = stock.name;
+            const stockQuantity = stock.shares;
+            const StockCurrentMarketPrice = stock.info.c;
+
+            // Calculate the value of each stock
+            const stockValue = stockQuantity * StockCurrentMarketPrice;
+            TotalHoldingsValue += stockValue;
+
+            // Log stock information
+            // console.log(`Stock Symbol: ${stockSymbol}`);
+            // console.log(`Quantity: ${stockQuantity}`);
+            // console.log(`Price: ${StockCurrentMarketPrice}`);
+            // console.log(`Value: ${stockValue}`);
+          });
+          console.log(`Total Holdings Value: ${TotalHoldingsValue}`);
+          setTotalHoldingsValue(TotalHoldingsValue);
+
         });
       } 
       else {
