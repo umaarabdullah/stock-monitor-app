@@ -62,93 +62,96 @@ function StatsRow(props) {
       showCancelButton: true,
       inputValidator: (value) => {
         if (!value) {
-          return 'You need to write something!'
+          return 'You need to write something!';
+        }
+        if (value === '0') {
+          return 'Invalid input: Number of shares cannot be zero';
         }
       }
     }).then((result) => {
       if (result.isConfirmed) {
+
         const inputValue = result.value;
         num_shares = inputValue;
         // Handle the input value when the user clicks the submit button
         console.log('Input value:', inputValue);
+
+        new_shares = num_shares;
+        const num_shares_tmp = new_shares;
+        console.log(`Number of shares purchased ${new_shares}`);
+        
+        // Authenticate with firebase
+        const uid = firebase.auth().currentUser.uid;
+        userId = uid;
+    
+        let old_shares = 0;
+        let myArray = [props.name, new_shares];     // an array composed of company name and new_shares count
+        const companyName = props.name;             // Variable for firestore label name ***uses computed property names syntax***
+    
+        /** Must Check if user has purchased stocks of this company before */
+        console.log(userId);
+        const userDocRef = db.collection("users").doc(userId);
+        userDocRef
+        .get()
+        .then((doc) => {      /* Everything has to be done inside the then block */
+          if (doc.exists) {
+            const userData = doc.data(); // get the user data
+            // console.log(userData);
+            /** MUST use userData in the the block */
+            // Traverse userData list
+            const userDataList = Object.keys(userData).map((key) => ({
+              key,
+              value: userData[key],
+            }));
+            userDataList.forEach((item) => {
+              if(item.key == props.name){
+                // console.log(item.key, item.value);
+                // console.log(item.value[1]);
+                old_shares = parseInt(item.value[1]);
+                new_shares = parseInt(new_shares);
+                new_shares = new_shares + old_shares;
+              }
+            });
+          } 
+          else {
+            console.log("No such user document");
+          }
+    
+          // Update database accordingly
+          myArray = [props.name, new_shares];
+          // Save to database with company as the label thus making it easier to query
+          db.collection('users').doc(uid).update({
+              [companyName]: myArray
+            })
+            .then(() => {
+              console.log('User data updated successfully.');
+            })
+            .catch((error) => {
+              console.error('Error updating user data:', error);
+            });
+          if (num_shares_tmp) {
+            // sweetalert success pop up
+            Swal.fire({
+              title: `${num_shares_tmp} Shares of ${props.name} Stock has been Purchased`,
+              icon: 'success',
+              text: props.name,
+            });
+            onBuyGetMyStock();    // used it as well just to see if it works or not !! Surprise Surprise It works !!
+          }
+          console.log(`${new_shares} shares owned by Client`);
+        })
+        .catch((error) => {
+          console.log("Error getting user document:", error);
+        });
+    
+        // trigger fetch from firebase to get recently modified data
+        onBuyGetMyStock();
+
       } else {
         // Handle the case when the user clicks the cancel button
         console.log('User cancelled the input');
       }
     });
-
-    new_shares = num_shares;
-
-    const num_shares_tmp = new_shares;
-
-    console.log(`Number of shares purchased ${new_shares}`);
-    
-    // Authenticate with firebase
-    const uid = firebase.auth().currentUser.uid;
-    userId = uid;
-
-    let old_shares = 0;
-    let myArray = [props.name, new_shares];     // an array composed of company name and new_shares count
-    const companyName = props.name;             // Variable for firestore label name ***uses computed property names syntax***
-
-    /** Must Check if user has purchased stocks of this company before */
-    console.log(userId);
-    const userDocRef = db.collection("users").doc(userId);
-    userDocRef
-    .get()
-    .then((doc) => {      /* Everything has to be done inside the then block */
-      if (doc.exists) {
-        const userData = doc.data(); // get the user data
-        // console.log(userData);
-        /** MUST use userData in the the block */
-        // Traverse userData list
-        const userDataList = Object.keys(userData).map((key) => ({
-          key,
-          value: userData[key],
-        }));
-        userDataList.forEach((item) => {
-          if(item.key == props.name){
-            // console.log(item.key, item.value);
-            // console.log(item.value[1]);
-            old_shares = parseInt(item.value[1]);
-            new_shares = parseInt(new_shares);
-            new_shares = new_shares + old_shares;
-          }
-        });
-      } 
-      else {
-        console.log("No such user document");
-      }
-
-      // Update database accordingly
-      myArray = [props.name, new_shares];
-      // Save to database with company as the label thus making it easier to query
-      db.collection('users').doc(uid).update({
-          [companyName]: myArray
-        })
-        .then(() => {
-          console.log('User data updated successfully.');
-        })
-        .catch((error) => {
-          console.error('Error updating user data:', error);
-        });
-      if (num_shares_tmp) {
-        // sweetalert success pop up
-        Swal.fire({
-          title: `${num_shares_tmp} Shares of ${props.name} Stock has been Purchased`,
-          icon: 'success',
-          text: props.name,
-        });
-        onBuyGetMyStock();    // used it as well just to see if it works or not !! Surprise Surprise It works !!
-      }
-      console.log(`${new_shares} shares owned by Client`);
-    })
-    .catch((error) => {
-      console.log("Error getting user document:", error);
-    });
-
-    // trigger fetch from firebase to get recently modified data
-    onBuyGetMyStock();
 
   };
 
@@ -165,7 +168,10 @@ function StatsRow(props) {
       showCancelButton: true,
       inputValidator: (value) => {
         if (!value) {
-          return 'You need to write something!'
+          return 'You need to write something!';
+        }
+        if (value === '0') {
+          return 'Invalid input: Number of shares cannot be zero';
         }
       }
     }).then((result) => {
@@ -174,83 +180,110 @@ function StatsRow(props) {
         num_shares = inputValue;
         // Handle the input value when the user clicks the submit button
         console.log('Input value:', inputValue);
+
+        shares_to_sell = num_shares;
+        const num_shares_tmp = shares_to_sell;
+        console.log(`Number of shares to sell ${shares_to_sell}`);
+    
+        // Authenticate with firebase
+        const uid = firebase.auth().currentUser.uid;
+        userId = uid;
+    
+        let old_shares = 0;
+        let myArray = [props.name, shares_to_sell];     // an array composed of company name and new_shares count
+        const companyName = props.name;                 // Variable for firestore label name ***uses computed property names syntax***
+    
+        /* Must check that user isn't trying to sell more shares then he already has */
+        console.log(userId);
+        const userDocRef = db.collection("users").doc(userId);
+        userDocRef
+        .get()
+        .then((doc) => {      /* Everything has to be done inside the then block */
+          if (doc.exists) {
+            const userData = doc.data(); // get the user data
+            // Traverse userData list
+            const userDataList = Object.keys(userData).map((key) => ({
+              key,
+              value: userData[key],
+            }));
+            userDataList.forEach((item) => {
+              if(item.key == props.name){
+                // console.log(item.key, item.value);             // console.log(item.value[1]);
+                old_shares = parseInt(item.value[1]);
+                shares_to_sell = parseInt(shares_to_sell);
+                if(shares_to_sell > old_shares){
+                  // user is trying to request to sell more shares than he already own
+                  // set shares to sell to 0 and warn user 
+                  shares_to_sell = 0;   
+                  Swal.fire({
+                    title: 'Invalid Transaction',
+                    text: 'You are trying to sell more shares than you own.',
+                    icon: 'warning',
+                    confirmButtonText: 'OK'
+                  });                                  
+                }
+                shares_to_sell = old_shares - shares_to_sell;
+              }
+            });
+          } 
+          else {
+            console.log("No such user document");
+          }
+    
+          // Update database accordingly
+          if(shares_to_sell > 0){
+            myArray = [props.name, shares_to_sell];
+            db.collection('users').doc(uid).update({
+                [companyName]: myArray
+              })
+              .then(() => {
+                console.log('User data updated successfully.');
+              })
+              .catch((error) => {
+                console.error('Error updating user data:', error);
+              });
+          }
+          else{     //  delete a specific field [companyName] from a document, we need to use the FieldPath and FieldValue classes provided by Firebase Firestore.
+            db.collection('users').doc(uid).update({
+              [companyName]: firebase.firestore.FieldValue.delete()
+            })
+            .then(() => {
+              console.log('Field deleted successfully.');
+            })
+            .catch((error) => {
+              console.error('Error deleting field:', error);
+            });
+          }
+    
+          if (num_shares_tmp) {
+            // sweetalert success pop up
+            Swal.fire({
+              title: `${num_shares_tmp} Shares of ${props.name} Stock has been Sold`,
+              icon: 'success',
+              text: props.name,
+            });
+            onSellGetMyStock();    // used it as well just to see if it works or not !! Surprise Surprise It works !!
+          }
+          console.log(`${shares_to_sell} shares owned by Client`);
+        })
+        .catch((error) => {
+          console.log("Error getting user document:", error);
+        });
+    
+        // trigger fetch from firebase to get recently modified data
+        onSellGetMyStock();
+
       } else {
         // Handle the case when the user clicks the cancel button
         console.log('User cancelled the input');
       }
     });
-    
-    shares_to_sell = num_shares;
-  
-    const num_shares_tmp = shares_to_sell;
-
-    console.log(`Number of shares to sell ${shares_to_sell}`);
-
-    // Authenticate with firebase
-    const uid = firebase.auth().currentUser.uid;
-    userId = uid;
-
-    let old_shares = 0;
-    let myArray = [props.name, shares_to_sell];     // an array composed of company name and new_shares count
-    const companyName = props.name;             // Variable for firestore label name ***uses computed property names syntax***
-
-    /* Must check that user isn't trying to sell more shares then he already has */
-    console.log(userId);
-    const userDocRef = db.collection("users").doc(userId);
-    userDocRef
-    .get()
-    .then((doc) => {      /* Everything has to be done inside the then block */
-      if (doc.exists) {
-        const userData = doc.data(); // get the user data
-        // Traverse userData list
-        const userDataList = Object.keys(userData).map((key) => ({
-          key,
-          value: userData[key],
-        }));
-        userDataList.forEach((item) => {
-          if(item.key == props.name){
-            // console.log(item.key, item.value);             // console.log(item.value[1]);
-            old_shares = parseInt(item.value[1]);
-            shares_to_sell = parseInt(shares_to_sell);
-            shares_to_sell = old_shares - shares_to_sell;
-          }
-        });
-      } 
-      else {
-        console.log("No such user document");
-      }
-
-      // Update database accordingly
-      myArray = [props.name, shares_to_sell];
-      db.collection('users').doc(uid).update({
-          [companyName]: myArray
-        })
-        .then(() => {
-          console.log('User data updated successfully.');
-        })
-        .catch((error) => {
-          console.error('Error updating user data:', error);
-        });
-
-      if (num_shares_tmp) {
-        // sweetalert success pop up
-        Swal.fire({
-          title: `${num_shares_tmp} Shares of ${props.name} Stock has been Sold`,
-          icon: 'success',
-          text: props.name,
-        });
-        onBuyGetMyStock();    // used it as well just to see if it works or not !! Surprise Surprise It works !!
-      }
-      console.log(`${shares_to_sell} shares owned by Client`);
-    })
-    .catch((error) => {
-      console.log("Error getting user document:", error);
-    });
-
-    // trigger fetch from firebase to get recently modified data
-    onBuyGetMyStock();
 
   };
+
+  function onSellGetMyStock() {
+    onBuyGetMyStock();
+  }
 
   // API Call for stock candles i.e historical data (1Y (Each Day), Monthly, Weekly, Per minute (Live))
   const getHistoricalStockData = async (stock, resolution) => {
