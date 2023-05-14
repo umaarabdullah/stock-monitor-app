@@ -86,6 +86,27 @@ function LineGraph(props) {
       setChartTitle('Default');
       handleDefaultGraphData();
     }
+
+    // Function to be executed every 3 minutes
+    const myEffect = () => {
+      console.log(`Candle stock resolution ${timeLineButtonActiveClick}`);
+      setChartTitle(onStockRowClick.toString());
+      handleGraphDataOnTimelineButtonClick(timeLineButtonActiveClick);    // API call for stock candle data with different resolution
+    };
+    // Call the effect initially if the condition is met
+    if (timeLineButtonActiveClick === "1") {
+      myEffect();
+    }
+    // Set up the interval to run the effect every 1 minutes
+    const interval = setInterval(() => {
+      if (timeLineButtonActiveClick === "1") {
+        myEffect();
+      }
+    }, 1* 60 * 1000);
+    // Clean up the interval when the component is unmounted or the dependency array changes
+    return () => {
+      clearInterval(interval);
+    };
     
   }, [timeLineButtonActiveClick]);
 
@@ -125,15 +146,19 @@ function LineGraph(props) {
       getGraphData('D', oneYearPreviousFromCurrentTimestamp, currentTimestamp);  
     }
     else if(resolution === '1'){    // handle live timeline button differently
-      /* live means yesterday live data */
-      const currentDate = new Date(); 
-      const yesterday = new Date(currentDate); 
-      yesterday.setDate(currentDate.getDate() - 1); 
-      const midnight = new Date(yesterday.getFullYear(), yesterday.getMonth(), yesterday.getDate(), 0, 0, 0); 
-      const midnightTimestamp = Math.floor(midnight.getTime() / 1000);       // Convert to timestamp in seconds
-      const currentTimeYesterday = Math.floor(yesterday.getTime() / 1000);   // Convert to timestamp in seconds
+      /* live means 2 days back live replay of stock behaviour data */
+      const currentDate = new Date();
+      const twoDaysBack = new Date(currentDate);
+      twoDaysBack.setDate(currentDate.getDate() - 2);
+      const midnight = new Date(twoDaysBack.getFullYear(), twoDaysBack.getMonth(), twoDaysBack.getDate(), 0, 0, 0);   // Midnight date and timestamp from two days back
+      const midnightTimestamp = Math.floor(midnight.getTime() / 1000);
+      const currentTimestamp = Math.floor(twoDaysBack.getTime() / 1000);    // Current date and timestamp from two days back
+      // console.log("Midnight Date:", midnight);
+      // console.log("Midnight Timestamp:", midnightTimestamp);
+      // console.log("Current Date:", twoDaysBack);
+      // console.log("Current Timestamp:", currentTimestamp);
       
-      getGraphData(resolution, midnightTimestamp, currentTimeYesterday);
+      getGraphData(resolution, midnightTimestamp, currentTimestamp);
     }
     else{                         // handle anyother timeline buttons 1D, 1W, M
       const currentDate = new Date();
@@ -159,44 +184,17 @@ function LineGraph(props) {
       });
       
       /* setData */
-      // console.log(`In getGraphData linechart: ${stockCandleData[0].name}`);
+      console.log(`In getGraphData linechart: ${stockCandleData[0].name}`);
+      // console.log(stockCandleData);
       setData(stockCandleData[0].data.data.c);
       
       /* setLabels */
-      const fromDate = new Date(fromTimeStamp * 1000);
-      const toDate = new Date(toTimeStamp * 1000);
-      const allDates = [];
-      let currentDate = new Date(fromDate);
-
-      // Find the dates required as per requested data resolution
-      if(resolution === 'D'){   // Daily/Year
-        while (currentDate <= toDate) {
-          allDates.push(new Date(currentDate));
-          currentDate.setDate(currentDate.getDate() + 1);    
-        }
-      }
-      else if(resolution === 'W'){   // Weekly
-        const oneWeek = 7 * 24 * 60 * 60 * 1000; // One week in milliseconds
-        while (currentDate <= toDate) {
-          allDates.push(new Date(currentDate));
-          currentDate.setTime(currentDate.getTime() + oneWeek);
-        }
-      }
-      else if(resolution === 'M'){   // Monthly
-        while (currentDate <= toDate) {
-          allDates.push(new Date(currentDate));
-          currentDate.setMonth(currentDate.getMonth() + 1);
-        }
-      }
-      else if(resolution === '1'){   // Live
-        const oneMinute = 60; // in seconds
-        let currentTimestamp = fromTimeStamp;
-        while (currentTimestamp <= toTimeStamp) {
-            const currentDate = new Date(currentTimestamp * 1000);
-            allDates.push(currentDate);
-            currentTimestamp += oneMinute;
-        }
-      }
+      let allDates = [];
+      // loop through the timestamps returned from the API Call
+      stockCandleData[0].data.data.t.forEach((currentTimeStamp) => {
+        const currentDate = new Date(currentTimeStamp*1000);
+        allDates.push(currentDate);
+      });
       // console.log(allDates);
       setLabels(allDates);
 

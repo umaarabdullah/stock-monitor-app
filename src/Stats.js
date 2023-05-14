@@ -10,7 +10,7 @@ import 'firebase/compat/firestore'
 const token = "cgrime9r01qs9ra1td0gcgrime9r01qs9ra1td10";
 const base_url = "https://finnhub.io/api/v1";
 
-const stocksList = ["AAPL", "MSFT", "TSLA", "META", "BABA", "UBER", "DIS", "SBUX", "AMZN", "NIO", "IBM"];
+const stocksList = ["AAPL", "MSFT", "TSLA", "META", "BABA", "UBER", "DIS", "SBUX", "AMZN", "NIO", "IBM", "GOOGL"];
 
 function Stats(props) {
 
