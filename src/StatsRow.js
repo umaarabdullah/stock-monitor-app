@@ -68,7 +68,7 @@ function StatsRow(props) {
           return 'Invalid input: Number of shares cannot be zero';
         }
       }
-    }).then((result) => {
+    }).then((result) => {           /** Number of shares bought must be greater than 0 */
       if (result.isConfirmed) {
 
         const inputValue = result.value;
@@ -79,6 +79,9 @@ function StatsRow(props) {
         new_shares = num_shares;
         const num_shares_tmp = new_shares;
         console.log(`Number of shares purchased ${new_shares}`);
+
+        let totalPurchasePriceOfNewShares = Number(props.price*new_shares).toFixed(2);
+        console.log(`Total Purchase Price of New Shares of ${props.name} stock: ${totalPurchasePriceOfNewShares}`);
         
         // Authenticate with firebase
         const uid = firebase.auth().currentUser.uid;
@@ -97,7 +100,6 @@ function StatsRow(props) {
           if (doc.exists) {
             const userData = doc.data(); // get the user data
             // console.log(userData);
-            /** MUST use userData in the the block */
             // Traverse userData list
             const userDataList = Object.keys(userData).map((key) => ({
               key,
@@ -121,7 +123,7 @@ function StatsRow(props) {
           myArray = [props.name, new_shares];
           // Save to database with company as the label thus making it easier to query
           db.collection('users').doc(uid).update({
-              [companyName]: myArray
+              [companyName]: myArray                    /** array to push into firestore will have the items as such: item[0]=companyName, item[1]=shareCount */
             })
             .then(() => {
               console.log('User data updated successfully.');
@@ -146,6 +148,47 @@ function StatsRow(props) {
     
         // trigger fetch from firebase to get recently modified data
         onBuyGetMyStock();
+
+        /** 
+         * Record total purchase price of the new shares
+         * Check if total purchase price exists or not
+         * if it exists then add to the previous value else create it
+        **/ 
+        userDocRef
+        .get()
+        .then((doc) => {      /* Everything has to be done inside the then block */
+          if (doc.exists) {
+            const userData = doc.data(); // get the user data
+            // console.log(userData);
+            if (userData.hasOwnProperty('Total Purchase Price')) {
+              console.log("Total Purchase Price Field exists");
+              const oldTotalPurchasePrice = userData['Total Purchase Price'];
+              console.log(`oldTotalPurchasePrice: ${oldTotalPurchasePrice}`);
+              totalPurchasePriceOfNewShares = parseInt(totalPurchasePriceOfNewShares) + parseInt(oldTotalPurchasePrice);
+            }
+          } 
+          else {
+            console.log("No such user document");
+          }
+
+          // Update database accordingly
+          myArray = [props.name, new_shares];
+          // Save to database
+          db.collection('users').doc(uid).update({
+            'Total Purchase Price': totalPurchasePriceOfNewShares
+            })
+            .then(() => {
+              console.log('User data updated successfully.');
+            })
+            .catch((error) => {
+              console.error('Error updating user data:', error);
+            });
+        })
+        .catch((error) => {
+          console.log("Error getting user document:", error);
+        });
+
+        // Record the buy transaction in firebase
 
       } else {
         // Handle the case when the user clicks the cancel button
@@ -272,6 +315,8 @@ function StatsRow(props) {
     
         // trigger fetch from firebase to get recently modified data
         onSellGetMyStock();
+
+        // Record the sell transaction in firebase
 
       } else {
         // Handle the case when the user clicks the cancel button
