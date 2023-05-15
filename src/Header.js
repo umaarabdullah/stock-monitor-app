@@ -69,21 +69,27 @@ function Header(props) {
                 </div>
             </div>
             <div className='header_menuItems'>
-                <a href='#'>My Stocks</a>
-                <a href='#'>Portfolio</a>
-                {/* <a href='#'>Cash</a> */}
-                {/* <a href='#'>Messages</a> */}
-                <a href='#' onClick={togglemenuItemsDropdown}>Account</a>
-                {menuItemsdropdownOpen && (
-                <div className="menuItems_dropdown_content" aria-labelledby="dropdownMenuButton">
+                <div className='header_menuItems_mystock_wrapper'>
+                    <a href='#'>My Stocks</a>
+                </div>
+                <div className='menuItems_dropdown_content_portfolio_wrapper'>
+                    <a href='#'>Portfolio</a>
+                    <div className="menuItems_dropdown_content">
+                    <a href="#">Transaction History</a>
+                    <a href="#">Cash</a>
+                    </div>
+                </div>
+                <div className='menuItems_dropdown_content_account_wrapper'>
+                    <a href='#'>Account</a>
+                    <div className="menuItems_dropdown_content">
                     {!props.onShowLoggedIn && (
-                        <a className="dropdown_item_signup" href="#" onClick={handleLoginClick}>login</a>
+                        <a className="dropdown_item_signup" href="#" onClick={handleLoginClick}>Login</a>
                     )}
                     {props.onShowLoggedIn && (
-                        <a className="dropdown_item_signout" href="#" onClick={handleLogoutClick}>logout</a>
+                        <a className="dropdown_item_signout" href="#" onClick={handleLogoutClick}>Logout</a>
                     )}
+                    </div>
                 </div>
-                )}
             </div>
         </div>
     )

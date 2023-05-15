@@ -68,8 +68,8 @@ function LineGraph(props) {
       handleRowClickGraphData();    // API Call for stock candle with resolution 'D'
     }
     else{
-      setChartTitle('Default');
-      handleDefaultGraphData();
+      setChartTitle('Total Portfolio Value');
+      handleTotalPortfolioGraphData();
     }
 
   }, [onStockRowClick]);
@@ -85,32 +85,31 @@ function LineGraph(props) {
       handleGraphDataOnTimelineButtonClick(timeLineButtonActiveClick);    // API call for stock candle data with different resolution
     }
     else{
-      setChartTitle('Default');
-      handleDefaultGraphData();
+      setChartTitle('Total Portfolio Value');
+      handleTotalPortfolioGraphData();
     }
 
-    /**  Causes a problem introduces delay across all timeline buttons **/
-    // Function to be executed every 3 minutes
-    // const myEffect = () => {
-    //   console.log(`Candle stock resolution ${timeLineButtonActiveClick}`);
-    //   setChartTitle(onStockRowClick.toString());
-    //   handleGraphDataOnTimelineButtonClick(timeLineButtonActiveClick);    // API call for stock candle data with different resolution
-    // };
-    // // Call the effect initially if the condition is met
-    // if (timeLineButtonActiveClick === "1") {
-    //   myEffect();
-    // }
-    // // Set up the interval to run the effect every 1 minutes
-    // if (timeLineButtonActiveClick === "1") {
-    //   const interval = setInterval(() => {
-    //     myEffect();
-    //   }, 1* 60 * 1000);
+    // while LIVE timeline button is active useEffect will be triggered every 30 seconds.
+    const myEffect = () => {
+      console.log(`myEffect resolution:${timeLineButtonActiveClick} every 30 Second`);
+      setChartTitle(onStockRowClick.toString());
+      handleGraphDataOnTimelineButtonClick(timeLineButtonActiveClick);    // API call for stock candle data with different resolution
+    };
+    // Call the effect initially if the condition is met
+    if (timeLineButtonActiveClick === "1") {
+      myEffect();
+    }
+    // Set up the interval to run the effect every 30 seconds
+    if (timeLineButtonActiveClick === "1") {
+      const interval = setInterval(() => {
+        myEffect();
+      }, 30 * 1000);
       
-    //   // Clean up the interval when the component is unmounted or the dependency array changes
-    //   return () => {
-    //     clearInterval(interval);
-    //   };
-    // }
+      // Clean up the interval when the component is unmounted or the dependency array changes
+      return () => {
+        clearInterval(interval);
+      };
+    }
     
   }, [timeLineButtonActiveClick]);
 
@@ -151,15 +150,16 @@ function LineGraph(props) {
     else if(resolution === '1'){    // handle live timeline button differently
       /* live means 2 days back live replay of stock behaviour data */
       const currentDate = new Date();
-      const twoDaysBack = new Date(currentDate);
-      twoDaysBack.setDate(currentDate.getDate() - 2);
-      const midnight = new Date(twoDaysBack.getFullYear(), twoDaysBack.getMonth(), twoDaysBack.getDate(), 0, 0, 0);   // Midnight date and timestamp from two days back
+      const fewDaysBack = new Date(currentDate);
+      fewDaysBack.setDate(currentDate.getDate() - 3);
+      const midnight = new Date(fewDaysBack.getFullYear(), fewDaysBack.getMonth(), fewDaysBack.getDate(), 0, 0, 0);   // Midnight date and timestamp from two days back
       const midnightTimestamp = Math.floor(midnight.getTime() / 1000);
-      const currentTimestamp = Math.floor(twoDaysBack.getTime() / 1000);    // Current date and timestamp from two days back
-      // console.log("Midnight Date:", midnight);
-      // console.log("Midnight Timestamp:", midnightTimestamp);
-      // console.log("Current Date:", twoDaysBack);
-      // console.log("Current Timestamp:", currentTimestamp);
+      const currentTimestamp = Math.floor(fewDaysBack.getTime() / 1000);    // Current date and timestamp from two days back
+
+      console.log("Midnight Date:", midnight);
+      console.log("Midnight Timestamp:", midnightTimestamp);
+      console.log("Current Date:", fewDaysBack);
+      console.log("Current Timestamp:", currentTimestamp);
       
       getGraphData(resolution, midnightTimestamp, currentTimestamp);
     }
@@ -188,7 +188,7 @@ function LineGraph(props) {
       
       /* setData */
       console.log(`In getGraphData linechart: ${stockCandleData[0].name}`);
-      // console.log(stockCandleData);
+      console.log(stockCandleData);
       setData(stockCandleData[0].data.data.c);
       
       /* setLabels */
@@ -218,7 +218,7 @@ function LineGraph(props) {
   };
 
 
-  function handleDefaultGraphData() {
+  function handleTotalPortfolioGraphData() {
     // LineChart data to show by default
     let xLabels = [];
     let sample_data = [];

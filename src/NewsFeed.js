@@ -16,6 +16,9 @@ function NewsFeed(props) {
   const [chartTitle, setChartTitle] = useState("");   // initialise with empty string
   const [activeButton, setActiveButton] = useState(0);
 
+  // const OverallProfitOrLoss = ((props.price - props.openPrice)/props.openPrice) * 100;
+  // const isPositive = OverallProfitOrLoss >= 0;
+
   const popularTopics = [
     "Technology",
     "Top Movies",
@@ -44,7 +47,8 @@ function NewsFeed(props) {
                 <h1>Total Holdings Value</h1>
               )}
               {/* +/-Profit/Loss in $ +/-(Profit/Loss in %) Today*/}
-              <p>Profit/Los - Today</p>
+              {/* <p>OverallProfitOrLoss - Today</p> */}
+              {/* <p className="stock_percentage" style={{ color: isPositive ? '#5AC53B' : 'red' }}> {Number(OverallProfitOrLoss).toFixed(2)}%</p> */}
             </div>
 
             <div className='newsfeed_chart'>
@@ -65,8 +69,8 @@ function NewsFeed(props) {
             </div>
           </div>
           <div className='newsfeed_buying_section'>
-            <h2>Buying Power</h2>
-            <h2>$44.11</h2>
+            {/* <h2>Buying Power</h2>
+            <h2>$44.11</h2> */}
           </div>
           <div className='newsfeed_market_section'>
             <div className='newsfeed_market_box'>
