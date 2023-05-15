@@ -195,17 +195,22 @@ function StatsRow(props) {
               // Array to store [share_count, stock_name, stock_price, date_and_time, buy_flag]
               const currentDateAndTime = new Date();
               console.log(`Buy Transaction at ${currentDate}`);
-              let transactionArray = [num_shares_tmp, props.name, props.price, currentDateAndTime, 'buy'];
+              let transactionArray = [parseInt(num_shares_tmp), props.name, props.price, currentDateAndTime, 'buy'];
 
               // if previous transactions happened
               if (userData.hasOwnProperty('Transactions')) {
 
                 console.log("StatsRow.js: Transactions exists");
                 console.log(userData['Transactions']);
+                let tempTransactionArray = userData['Transactions'];
+                // Add the items of transactionArray at the back of tempTransactionArray
+                tempTransactionArray.push(...transactionArray);
+
+                console.log(tempTransactionArray);
 
                 // Save to database
                 db.collection('users').doc(uid).update({
-                  'Transactions': firebase.firestore.FieldValue.arrayUnion(...transactionArray.flat())
+                  'Transactions': tempTransactionArray
                   })
                   .then(() => {
                     console.log('User data updated successfully.');
@@ -434,17 +439,20 @@ function StatsRow(props) {
                 // Array to store [share_count, stock_name, stock_price, date_and_time, sell_flag]
                 const currentDateAndTime = new Date();
                 console.log(`Sell Transaction at ${currentDate}`);
-                let transactionArray = [num_shares_tmp, props.name, props.price, currentDateAndTime, 'sell'];
+                let transactionArray = [parseInt(num_shares_tmp), props.name, props.price, currentDateAndTime, 'sell'];
 
                 // if previous transactions happened
                 if (userData.hasOwnProperty('Transactions')) {
 
                   console.log("StatsRow.js: Transactions exists");
                   console.log(userData['Transactions']);
+                  let tempTransactionArray = userData['Transactions'];
+                  // Add the items of transactionArray at the back of tempTransactionArray
+                  tempTransactionArray.push(...transactionArray);
 
                   // Save to database
                   db.collection('users').doc(uid).update({
-                    'Transactions': firebase.firestore.FieldValue.arrayUnion(...transactionArray.flat())
+                    'Transactions': tempTransactionArray
                     })
                     .then(() => {
                       console.log('User data updated successfully.');
