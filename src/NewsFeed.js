@@ -12,12 +12,13 @@ function NewsFeed(props) {
   const { setTimeLineButtonActiveClick } = props;
   const { timeLineButtonActiveClick } = props;
   const { TotalHoldingsValue } = props;
+  const { TotalPurchasePrice } = props;
 
   const [chartTitle, setChartTitle] = useState("");   // initialise with empty string
   const [activeButton, setActiveButton] = useState(0);
 
-  // const OverallProfitOrLoss = ((props.price - props.openPrice)/props.openPrice) * 100;
-  // const isPositive = OverallProfitOrLoss >= 0;
+  const OverallProfitOrLoss = ((TotalHoldingsValue - TotalPurchasePrice)/ TotalPurchasePrice) * 100;
+  const isPositive = OverallProfitOrLoss >= 0;
 
   const popularTopics = [
     "Technology",
@@ -42,13 +43,17 @@ function NewsFeed(props) {
           <div className='newsfeed_chartSection'>
             <div className='newsfeed_portfolio'>
               {TotalHoldingsValue !== 0 ? (
-                <h1>${TotalHoldingsValue}</h1>
+                <h1>${Number(TotalHoldingsValue).toFixed(2)}</h1>
               ) : (
                 <h1>Total Holdings Value</h1>
               )}
               {/* +/-Profit/Loss in $ +/-(Profit/Loss in %) Today*/}
-              {/* <p>OverallProfitOrLoss - Today</p> */}
-              {/* <p className="stock_percentage" style={{ color: isPositive ? '#5AC53B' : 'red' }}> {Number(OverallProfitOrLoss).toFixed(2)}%</p> */}
+              {/* <p className="protfit_loss_percentage" style={{ color: isPositive ? '#5AC53B' : 'red' }}> {Number(OverallProfitOrLoss).toFixed(2)}%</p> */}
+              {!isNaN(OverallProfitOrLoss) && (
+                <p className="profit_loss_percentage" style={{ color: isPositive ? '#5AC53B' : 'red' }}>
+                  {Number(OverallProfitOrLoss).toFixed(2)}%   <span style={{ color: '#ffffff' }}>Today</span>
+                </p>
+              )}
             </div>
 
             <div className='newsfeed_chart'>

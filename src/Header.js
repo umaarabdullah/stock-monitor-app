@@ -75,7 +75,7 @@ function Header(props) {
                 <div className='menuItems_dropdown_content_portfolio_wrapper'>
                     <a href='#'>Portfolio</a>
                     <div className="menuItems_dropdown_content">
-                    <a href="#">Transaction History</a>
+                    {/* <a href="#">Transaction History</a> */}
                     <a href="#">Cash</a>
                     </div>
                 </div>
