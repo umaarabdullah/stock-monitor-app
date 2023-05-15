@@ -6,6 +6,7 @@ import { makeStyles } from '@material-ui/core';
 import './Header.css' 
 import { Search } from '@material-ui/icons'
 import Swal from 'sweetalert2';
+import { Link, navigate } from 'react-router-dom';
 
 function Header(props) {
 
@@ -75,8 +76,8 @@ function Header(props) {
                 <div className='menuItems_dropdown_content_portfolio_wrapper'>
                     <a href='#'>Portfolio</a>
                     <div className="menuItems_dropdown_content">
-                    {/* <a href="#">Transaction History</a> */}
-                    <a href="#">Cash</a>
+                    {/* <a href="#">Cash</a> */}
+                    <a href="#"><Link to="/transaction-page">Transactions</Link></a>
                     </div>
                 </div>
                 <div className='menuItems_dropdown_content_account_wrapper'>
