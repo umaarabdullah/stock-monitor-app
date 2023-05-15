@@ -15,6 +15,7 @@ function App() {
   const [onStockRowClick, setOnStockRowClick] = useState(false);
   const [timeLineButtonActiveClick, setTimeLineButtonActiveClick] = useState("");
   const [TotalHoldingsValue, setTotalHoldingsValue] = useState(0.0);   // Initialize with 0.0
+  const [TotalPurchasePrice, setTotalPurchasePrice] = useState(0.0);   // Initialize with 0.0
 
 
   function handleShowLoginPage() {
@@ -46,6 +47,7 @@ function App() {
           onShowLoginPage={handleShowLoginPage} 
           onShowLoggedIn={loggedIn} 
           onLoggedOut={handleOnLoggedOut}
+          setTotalHoldingsValue={setTotalHoldingsValue}
         /> 
       </div>
       <div className='app_body'>
@@ -56,12 +58,14 @@ function App() {
             setTimeLineButtonActiveClick={setTimeLineButtonActiveClick}
             timeLineButtonActiveClick={timeLineButtonActiveClick}
             TotalHoldingsValue={TotalHoldingsValue}
+            TotalPurchasePrice={TotalPurchasePrice}
           />
           <Stats 
             onLoggedIn={loggedIn} 
             onSetGraphData={setGraphData} 
             OnSetOnStockRowClick={setOnStockRowClick}
             setTotalHoldingsValue={setTotalHoldingsValue}
+            setTotalPurchasePrice={setTotalPurchasePrice}
           />
         </div>
       </div>

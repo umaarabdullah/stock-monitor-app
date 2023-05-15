@@ -17,6 +17,7 @@ function Stats(props) {
   const {OnSetOnStockRowClick} = props;
   const {onSetGraphData} = props;
   const {setTotalHoldingsValue} = props;
+  const {setTotalPurchasePrice} = props;
 
   const [stockData, setStockData] = useState([]);
   const [myStocks, setMyStocks] = useState([]);
@@ -39,12 +40,17 @@ function Stats(props) {
         let userStockData = [];
         const userData = doc.data(); // get the user data
         // console.log(userData);
-        /** MUST use userData in the the block */
+        
+        if (userData.hasOwnProperty('Total Purchase Price')) {
+          console.log("Stats.js: Total Purchase Price Field exists");
+          setTotalPurchasePrice(userData['Total Purchase Price']);      // set total purchase price
+        }
+        
+        // Traverser user data list
         const userDataList = Object.keys(userData).map((key) => ({
           key,
           value: userData[key],
         }));
-
         userDataList.forEach((item) => {
           if(stocksList.includes(item.key)){
             // console.log("Match");
@@ -58,7 +64,6 @@ function Stats(props) {
                 info: res.data            // API Response from finnhub
               })
             }));
-
           }
         });
         Promise.all(promises).then(()=>{
@@ -79,7 +84,6 @@ function Stats(props) {
             const stockValue = stockQuantity * StockCurrentMarketPrice;
             TotalHoldingsValue += stockValue;
 
-            // Log stock information
             // console.log(`Stock Symbol: ${stockSymbol}`);
             // console.log(`Quantity: ${stockQuantity}`);
             // console.log(`Price: ${StockCurrentMarketPrice}`);
