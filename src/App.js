@@ -47,6 +47,7 @@ function App() {
           onShowLoginPage={handleShowLoginPage} 
           onShowLoggedIn={loggedIn} 
           onLoggedOut={handleOnLoggedOut}
+          setTotalHoldingsValue={setTotalHoldingsValue}
         /> 
       </div>
       <div className='app_body'>

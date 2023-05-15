@@ -180,6 +180,66 @@ function StatsRow(props) {
             console.log("Error getting user document:", error);
           });
 
+          
+          /** 
+           * Record the buy transaction in firebase 
+           * Store share count,stock name, stock price, date and time, buy flag
+          **/ 
+          userDocRef
+          .get()
+          .then((doc) => {      /* Everything has to be done inside the then block */
+            if (doc.exists) {
+              const userData = doc.data(); // get the user data
+              // console.log(userData);
+
+              // Array to store [share_count, stock_name, stock_price, date_and_time, buy_flag]
+              const currentDateAndTime = new Date();
+              console.log(`Buy Transaction at ${currentDate}`);
+              let transactionArray = [num_shares_tmp, props.name, props.price, currentDateAndTime, 'buy'];
+
+              // if previous transactions happened
+              if (userData.hasOwnProperty('Transactions')) {
+
+                console.log("StatsRow.js: Transactions exists");
+                console.log(userData['Transactions']);
+
+                // Save to database
+                db.collection('users').doc(uid).update({
+                  'Transactions': firebase.firestore.FieldValue.arrayUnion(...transactionArray.flat())
+                  })
+                  .then(() => {
+                    console.log('User data updated successfully.');
+                  })
+                  .catch((error) => {
+                    console.error('Error updating user data:', error);
+                  });
+              }
+              else{
+
+                console.log("StatsRow.js: Transactions doesn't exist");
+
+                // Save to database
+                db.collection('users').doc(uid).update({
+                  'Transactions': transactionArray
+                  })
+                  .then(() => {
+                    console.log('User data updated successfully.');
+                  })
+                  .catch((error) => {
+                    console.error('Error updating user data:', error);
+                  });
+              }
+            } 
+            else {
+              console.log("No such user document");
+            }
+
+          })
+          .catch((error) => {
+            console.log("Error getting user document:", error);
+          });
+
+
         })
         .catch((error) => {
           console.log("Error getting user document:", error);
@@ -187,8 +247,6 @@ function StatsRow(props) {
     
         // trigger fetch from firebase to get recently modified data
         onBuyGetMyStock();
-
-        // Record the buy transaction in firebase
 
       } else {
         // Handle the case when the user clicks the cancel button
@@ -326,6 +384,7 @@ function StatsRow(props) {
            * if it exists then subtract to the previous value else do nothing don't update database
           **/ 
           if(!user_trying_to_overSell_flag){
+
             userDocRef
             .get()
             .then((doc) => {      /* Everything has to be done inside the then block */
@@ -360,7 +419,71 @@ function StatsRow(props) {
             .catch((error) => {
               console.log("Error getting user document:", error);
             });
+
+            /** 
+             * Record the sell transaction in firebase 
+             * Store share count,stock name, stock price, date and time, sell_flag
+            **/ 
+            userDocRef
+            .get()
+            .then((doc) => {      /* Everything has to be done inside the then block */
+              if (doc.exists) {
+                const userData = doc.data(); // get the user data
+                // console.log(userData);
+
+                // Array to store [share_count, stock_name, stock_price, date_and_time, sell_flag]
+                const currentDateAndTime = new Date();
+                console.log(`Sell Transaction at ${currentDate}`);
+                let transactionArray = [num_shares_tmp, props.name, props.price, currentDateAndTime, 'sell'];
+
+                // if previous transactions happened
+                if (userData.hasOwnProperty('Transactions')) {
+
+                  console.log("StatsRow.js: Transactions exists");
+                  console.log(userData['Transactions']);
+
+                  // Save to database
+                  db.collection('users').doc(uid).update({
+                    'Transactions': firebase.firestore.FieldValue.arrayUnion(...transactionArray.flat())
+                    })
+                    .then(() => {
+                      console.log('User data updated successfully.');
+                    })
+                    .catch((error) => {
+                      console.error('Error updating user data:', error);
+                    });
+                }
+                else{
+
+                  console.log("StatsRow.js: Transactions doesn't exist");
+
+                  // Save to database
+                  db.collection('users').doc(uid).update({
+                    'Transactions': transactionArray
+                    })
+                    .then(() => {
+                      console.log('User data updated successfully.');
+                    })
+                    .catch((error) => {
+                      console.error('Error updating user data:', error);
+                    });
+                }
+              } 
+              else {
+                console.log("No such user document");
+                
+
+              }
+
+            })
+            .catch((error) => {
+              console.log("Error getting user document:", error);
+            });
+
           }
+
+      
+
 
         })
         .catch((error) => {
@@ -369,8 +492,6 @@ function StatsRow(props) {
     
         // trigger fetch from firebase to get recently modified data
         onSellGetMyStock();
-
-        // Record the sell transaction in firebase
 
       } else {
         // Handle the case when the user clicks the cancel button

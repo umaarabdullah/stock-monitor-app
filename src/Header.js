@@ -10,6 +10,8 @@ import { Link, navigate } from 'react-router-dom';
 
 function Header(props) {
 
+    const {setTotalHoldingsValue} = props;
+
     const [menuItemsdropdownOpen, setmenuItemsDropdownOpen] = useState(false);
     const menuItemsdropDownRef = useRef(null);
 
@@ -56,6 +58,7 @@ function Header(props) {
             .catch(error => {
                 console.log(error);
             });
+        setTotalHoldingsValue(0);
     }
 
     return (
