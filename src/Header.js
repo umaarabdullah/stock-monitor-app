@@ -61,6 +61,15 @@ function Header(props) {
         setTotalHoldingsValue(0);
     }
 
+    function handleNotLoggedInClick() {
+
+        Swal.fire({
+            title: 'Must Log In!',
+            icon: 'error',
+            text: 'You must login inorder to access transactions',
+        });
+    }
+
     return (
         <div className='header_wrapper'>
             <div className='header_logo'>
@@ -83,7 +92,7 @@ function Header(props) {
                         {props.onShowLoggedIn ? (
                             <a href="#"><Link to="/transaction-page">Transactions</Link></a>
                         ) : (
-                            <a href="#">Transactions</a>
+                            <a href="#" onClick={handleNotLoggedInClick}>Transactions</a>
                         )}
                     </div>
                 </div>
