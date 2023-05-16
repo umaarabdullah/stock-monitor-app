@@ -18,7 +18,6 @@ function Transaction() {
     useEffect(() => {
       
         getTransactionData();
-        console.log();
 
     }, [])
 
@@ -67,10 +66,10 @@ function Transaction() {
                 for(let i=0; i<tempTransactionArray.length; i+=5){
 
                   const shareCount = tempTransactionArray[i];
-                  const stockName = tempTransactionArray[i+1];
-                  const stockPrice = tempTransactionArray[i+2];
-                  const dateTime = tempTransactionArray[i+3];
-                  const buySellFlag = tempTransactionArray[i+4];
+                  const stockName = tempTransactionArray[i + 1];
+                  const stockPrice = tempTransactionArray[i + 2];
+                  const dateTime = tempTransactionArray[i + 3];
+                  const buySellFlag = tempTransactionArray[i + 4];
 
                   const transactionObj = {
                       shareCount,
@@ -123,7 +122,7 @@ function Transaction() {
                   <td>{transaction.shareCount}</td>
                   <td>{transaction.stockName}</td>
                   <td>{transaction.stockPrice}</td>
-                  <td style={{ paddingRight: '20px' }}>{transaction.dateTime.toDate().toString()}</td>
+                  <td style={{ paddingRight: '20px' }}>{transaction.dateTime.toString()}</td>
                   <td>{transaction.buySellFlag}</td>
                 </tr>
               ))
