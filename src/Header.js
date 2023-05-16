@@ -79,8 +79,12 @@ function Header(props) {
                 <div className='menuItems_dropdown_content_portfolio_wrapper'>
                     <a href='#'>Portfolio</a>
                     <div className="menuItems_dropdown_content">
-                    {/* <a href="#">Cash</a> */}
-                    <a href="#"><Link to="/transaction-page">Transactions</Link></a>
+                        {/* <a href="#">Cash</a> */}
+                        {props.onShowLoggedIn ? (
+                            <a href="#"><Link to="/transaction-page">Transactions</Link></a>
+                        ) : (
+                            <a href="#">Transactions</a>
+                        )}
                     </div>
                 </div>
                 <div className='menuItems_dropdown_content_account_wrapper'>

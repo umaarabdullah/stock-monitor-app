@@ -8,6 +8,7 @@ import {
   RouterProvider,
 } from "react-router-dom";
 import CashPage from './Pages/CashPage';
+import Transaction from './Pages/Transaction';
 
   const router = createBrowserRouter([
     {
@@ -20,7 +21,7 @@ import CashPage from './Pages/CashPage';
     },
     {
       path: "/transaction-page",
-      element: <CashPage />,
+      element: <Transaction />,
     },
   ]);
 

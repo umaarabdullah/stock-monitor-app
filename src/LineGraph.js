@@ -218,6 +218,7 @@ function LineGraph(props) {
   };
 
 
+  // show minute by minute portfolio value upto how long user stays on the website
   function handleTotalPortfolioGraphData() {
     // LineChart data to show by default
     let xLabels = [];
