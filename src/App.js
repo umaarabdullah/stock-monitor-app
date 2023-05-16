@@ -80,10 +80,10 @@ function App() {
   return (
     <div className="App">
       {showLoginPage && 
-                        <LoginPage 
-                          onHideLoginPage={handleHideLoginPage} 
-                          onCancelLoginPage={handleCancelLoginPage}
-                        />}
+          <LoginPage 
+            onHideLoginPage={handleHideLoginPage} 
+            onCancelLoginPage={handleCancelLoginPage}
+          />}
       <div className='app_header'>
         <Header 
           onShowLoginPage={handleShowLoginPage} 

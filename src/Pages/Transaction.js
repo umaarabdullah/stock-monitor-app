@@ -101,17 +101,23 @@ function Transaction() {
 
     return (
       <div className="transaction-page">
-        <Link to="/" className="back-button" onClick={handleBackClick}>Back</Link>
-        <h1>Transaction Page</h1>
-        <table>
+        <div className='transaction_page_back_button'>
+          <Link to="/" className="back_button" onClick={handleBackClick}>Back</Link>
+        </div>
+        <div className='transaction_page_title'>
+          <h1>Transaction Page</h1>
+        </div>
+        <div className='transaction_page_table'>
+          <table>
           <thead>
           <tr>
-              <th>Stock Trading</th>
-              <th>Share Count</th>
+              <th>S/No</th>
+              <th>Transaction Type</th>
+              <th>Shares</th>
               <th>Stock Name</th>
-              <th>Stock Price</th>
               <th>Date & Time</th>
-              <th>Buy/Sell </th>
+              <th>Cost per Share</th>
+              <th>Net Amount</th>
           </tr>
           </thead>
           <tbody>
@@ -119,11 +125,12 @@ function Transaction() {
               transactionData.map((transaction, index) => (
                 <tr key={index}>
                   <td>{index + 1}</td>
+                  <td>{transaction.buySellFlag}</td>
                   <td>{transaction.shareCount}</td>
                   <td>{transaction.stockName}</td>
-                  <td>{transaction.stockPrice}</td>
-                  <td style={{ paddingRight: '20px' }}>{transaction.dateTime.toString()}</td>
-                  <td>{transaction.buySellFlag}</td>
+                  <td style={{ paddingRight: '20px' }}> {transaction.dateTime.toString()} </td>
+                  <td>${Number(transaction.stockPrice).toFixed(2)}</td>
+                  <td> ${Number(transaction.stockPrice*transaction.shareCount).toFixed(2)} </td>
                 </tr>
               ))
             ) : (
@@ -133,6 +140,7 @@ function Transaction() {
             )}
           </tbody>
         </table>
+        </div>
       </div>
     )
 }

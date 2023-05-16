@@ -1,13 +1,51 @@
 .transaction-page {
-    color: white;
-  }
+  color: white;
+  text-align: center;
+}
+
+.transaction_page_back_button{
+  margin-top: 30px;
+}
+
+.back_button {
+  color: white;
+  font-weight: bold;
+}
+
+.transaction_page_title {
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+.transaction_page_table {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
   
-  .transaction-page h1 {
-    color: white;
-  }
-  
-  .transaction-page th,
-  .transaction-page td {
-    color: white;
-  }
+.transaction-page h1 {
+  color: white;
+}
+
+.transaction-page th,
+.transaction-page td {
+  color: white;
+}
+
+.transaction_page_table td:hover {
+  background-color: #31363a;
+}
+
+.transaction-page th {
+  background-image: linear-gradient(to bottom right, #0100EC, #FB36F4);
+}
+
+.transaction-page td, th {
+  text-align: center;
+  padding: 7px;
+}
+.transaction-page td {
+  background-color: #1e1e1e;
+}
+
   
