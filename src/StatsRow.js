@@ -16,6 +16,17 @@ const currentTimestamp = Math.floor(currentDate.getTime() / 1000);
 const januaryFirst = new Date(currentDate.getFullYear(), 0, 1);
 const januaryFirstTimestamp = Math.floor(januaryFirst.getTime() / 1000);
 
+const options = {
+  weekday: 'short',
+  year: 'numeric',
+  month: 'short',
+  day: 'numeric',
+  hour: 'numeric',
+  minute: 'numeric',
+  second: 'numeric',
+  hour12: true
+};
+
 function StatsRow(props) {
 
   const { onBuyGetMyStock } = props;
@@ -131,14 +142,17 @@ function StatsRow(props) {
             .catch((error) => {
               console.error('Error updating user data:', error);
             });
+
           if (num_shares_tmp) {
+            
+            onBuyGetMyStock();    // used it as well just to see if it works or not !! Surprise Surprise It works !!
+            
             // sweetalert success pop up
             Swal.fire({
               title: `${num_shares_tmp} Shares of ${props.name} Stock has been Purchased`,
               icon: 'success',
               text: props.name,
             });
-            onBuyGetMyStock();    // used it as well just to see if it works or not !! Surprise Surprise It works !!
           }
           console.log(`${new_shares} shares owned by Client`);
 
@@ -194,8 +208,9 @@ function StatsRow(props) {
 
               // Array to store [share_count, stock_name, stock_price, date_and_time, buy_flag]
               const currentDateAndTime = new Date();
-              console.log(`Buy Transaction at ${currentDate}`);
-              let transactionArray = [parseInt(num_shares_tmp), props.name, props.price, currentDateAndTime, 'buy'];
+              const formattedDateTime = currentDateAndTime.toLocaleString('en-US', options).replace('GMT', '');
+              console.log(`Buy Transaction at ${formattedDateTime}`);
+              let transactionArray = [parseInt(num_shares_tmp), props.name, props.price, formattedDateTime, 'Bought'];
 
               // if previous transactions happened
               if (userData.hasOwnProperty('Transactions')) {
@@ -365,13 +380,15 @@ function StatsRow(props) {
           }
     
           if (num_shares_tmp && !user_trying_to_overSell_flag) {
+
+            onSellGetMyStock();    // used it as well just to see if it works or not !! Surprise Surprise It works !!
+
             // sweetalert success pop up
             Swal.fire({
               title: `${num_shares_tmp} Shares of ${props.name} Stock has been Sold`,
               icon: 'success',
               text: props.name,
             });
-            onSellGetMyStock();    // used it as well just to see if it works or not !! Surprise Surprise It works !!
           }
           else {
             Swal.fire({
@@ -381,6 +398,7 @@ function StatsRow(props) {
               confirmButtonText: 'OK'
             }); 
           }
+
           console.log(`${shares_to_sell} shares owned by Client`);
 
           /** 
@@ -438,8 +456,9 @@ function StatsRow(props) {
 
                 // Array to store [share_count, stock_name, stock_price, date_and_time, sell_flag]
                 const currentDateAndTime = new Date();
-                console.log(`Sell Transaction at ${currentDate}`);
-                let transactionArray = [parseInt(num_shares_tmp), props.name, props.price, currentDateAndTime, 'sell'];
+                const formattedDateTime = currentDateAndTime.toLocaleString('en-US', options).replace('GMT', '');
+                console.log(`Sell Transaction at ${formattedDateTime}`);
+                let transactionArray = [parseInt(num_shares_tmp), props.name, props.price, formattedDateTime, 'Sold'];
 
                 // if previous transactions happened
                 if (userData.hasOwnProperty('Transactions')) {
