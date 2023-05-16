@@ -99,11 +99,11 @@ function LineGraph(props) {
     if (timeLineButtonActiveClick === "1") {
       myEffect();
     }
-    // Set up the interval to run the effect every 30 seconds
+    // Set up the interval to run the effect every 1 minute
     if (timeLineButtonActiveClick === "1") {
       const interval = setInterval(() => {
         myEffect();
-      }, 30 * 1000);
+      }, 1 * 60 * 1000);
       
       // Clean up the interval when the component is unmounted or the dependency array changes
       return () => {
@@ -218,6 +218,7 @@ function LineGraph(props) {
   };
 
 
+  // show minute by minute portfolio value upto how long user stays on the website
   function handleTotalPortfolioGraphData() {
     // LineChart data to show by default
     let xLabels = [];
