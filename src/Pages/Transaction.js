@@ -1,30 +1,35 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { db } from '../firebase_db';
 import firebase from 'firebase/compat/app';
 import 'firebase/compat/auth';
 import 'firebase/compat/firestore';
-
+import './Transaction.css'
+import { useLocation } from 'react-router-dom';
 
 
 function Transaction() {
-
+    
+    const location = useLocation();
     const history = useNavigate();
+
+    const [transactionData, setTransactionData] = useState([]);
+
+    useEffect(() => {
+      
+        getTransactionData();
+        console.log();
+
+    }, [])
 
     useEffect(() => {
 
-      const handleBrowserBack = () => {
-        // Perform any additional actions if needed
-        console.log('browser back clicked');
-        history('/');
-      };
-  
-      window.addEventListener('popstate', handleBrowserBack);
-  
-      return () => {
-        window.removeEventListener('popstate', handleBrowserBack);
-      };
-    }, [history]);
+      console.log('TransactionData Triggered useEffect');
+      console.log(transactionData);
+      
+    }, [transactionData]);
+    
+    
 
     let userId;
 
@@ -51,11 +56,33 @@ function Transaction() {
     
             // if previous transactions happened
             if (userData.hasOwnProperty('Transactions')) {
-    
-              console.log("Transaction.js: Transactions exists");
-              console.log(userData['Transactions']);
-              let tempTransactionArray = userData['Transactions'];
-              console.log(tempTransactionArray);
+
+                console.log("Transaction.js: Transactions exists");
+                console.log(userData['Transactions']);
+                let tempTransactionArray = userData['Transactions'];
+                // console.log(tempTransactionArray);
+
+                let formattedTransactionData = [];
+                // format transaction data such that each object has the following
+                for(let i=0; i<tempTransactionArray.length; i+=5){
+
+                  const shareCount = tempTransactionArray[i];
+                  const stockName = tempTransactionArray[i+1];
+                  const stockPrice = tempTransactionArray[i+2];
+                  const dateTime = tempTransactionArray[i+3];
+                  const buySellFlag = tempTransactionArray[i+4];
+
+                  const transactionObj = {
+                      shareCount,
+                      stockName,
+                      stockPrice,
+                      dateTime,
+                      buySellFlag
+                    };
+                  
+                  formattedTransactionData.push(transactionObj);
+                } 
+                setTransactionData(formattedTransactionData);
             }
           } 
           else {
@@ -68,15 +95,46 @@ function Transaction() {
         });
     }
 
-    function handleTransactionClick() {
-        getTransactionData();
+    function handleBackClick(event) {
+      event.preventDefault();
+      history(-1);
     }
 
     return (
-    <div>
-        <h1 style={{ color: 'white' }} onClick={handleTransactionClick}>Transaction</h1>
-        <Link to="/">Go back to Home Page</Link>
-    </div>
+      <div className="transaction-page">
+        <Link to="/" className="back-button" onClick={handleBackClick}>Back</Link>
+        <h1>Transaction Page</h1>
+        <table>
+          <thead>
+          <tr>
+              <th>Stock Trading</th>
+              <th>Share Count</th>
+              <th>Stock Name</th>
+              <th>Stock Price</th>
+              <th>Date & Time</th>
+              <th>Buy/Sell </th>
+          </tr>
+          </thead>
+          <tbody>
+            {transactionData.length > 0 ? (
+              transactionData.map((transaction, index) => (
+                <tr key={index}>
+                  <td>{index + 1}</td>
+                  <td>{transaction.shareCount}</td>
+                  <td>{transaction.stockName}</td>
+                  <td>{transaction.stockPrice}</td>
+                  <td style={{ paddingRight: '20px' }}>{transaction.dateTime.toDate().toString()}</td>
+                  <td>{transaction.buySellFlag}</td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan="6">No transaction data available.</td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      </div>
     )
 }
 
