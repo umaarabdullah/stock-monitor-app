@@ -31,7 +31,7 @@ function UserStockHoldings() {
             const backgroundColors = holdingsDataState.map((holdings) => getRandomColor());
         
                 new Chart(chartRef.current, {
-                type: 'pie',
+                type: 'doughnut',
                 data: {
                     labels: labels,
                     datasets: [
@@ -60,7 +60,7 @@ function UserStockHoldings() {
         event.preventDefault();
         navigate("/");
     }
-    
+
 
     return (
         <div className='holdings-page'>
@@ -71,34 +71,39 @@ function UserStockHoldings() {
                 <h1>Holdings</h1>
             </div>
             <div className="container">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>S/No</th>
-                            <th>Symbol</th>
-                            <th>Shares</th>
-                            <th>Price</th>
-                            <th>Total</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {holdingsDataState && holdingsDataState.length > 0 ? (
-                            holdingsDataState.map((holdings, index) => (
-                            <tr key={index}>
-                                <td>{index + 1}</td>
-                                <td>{holdings.name}</td>
-                                <td>{holdings.shares}</td>
-                                <td>{Number(holdings.info.c).toFixed(2)}</td>
-                                <td> ${Number(holdings.shares*holdings.info.c).toFixed(2)} </td>
-                            </tr>
-                            ))
-                        ) : (
+                <div className='table_container'>
+                    <table>
+                        <thead>
                             <tr>
-                            <td colSpan="6">No holdings data available.</td>
+                                <th>S/No</th>
+                                <th>Symbol</th>
+                                <th>Shares</th>
+                                <th>Price</th>
+                                <th>Total</th>
                             </tr>
-                        )}
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            {holdingsDataState && holdingsDataState.length > 0 ? (
+                                holdingsDataState.map((holdings, index) => (
+                                <tr key={index}>
+                                    <td>{index + 1}</td>
+                                    <td>{holdings.name}</td>
+                                    <td>{holdings.shares}</td>
+                                    <td>{Number(holdings.info.c).toFixed(2)}</td>
+                                    <td> ${Number(holdings.shares*holdings.info.c).toFixed(2)} </td>
+                                </tr>
+                                ))
+                            ) : (
+                                <tr>
+                                <td colSpan="6">No holdings data available.</td>
+                                </tr>
+                            )}
+                        </tbody>
+                    </table>
+                </div>
+                <div className="chart_container">
+                    <canvas ref={chartRef}></canvas>
+                </div>
             </div>
         </div>
     )
