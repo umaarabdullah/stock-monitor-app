@@ -38,4 +38,11 @@ button {
 button:hover {
     background-color: #0069d9; /* Change the background color on hover */
 }
+
+button {
+    background-color: rgb(66, 59, 59);
+    color: white;
+    border-radius: 5px;
+    padding: 5px; 
+}
   

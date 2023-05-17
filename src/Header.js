@@ -6,14 +6,18 @@ import { makeStyles } from '@material-ui/core';
 import './Header.css' 
 import { Search } from '@material-ui/icons'
 import Swal from 'sweetalert2';
-import { Link, navigate } from 'react-router-dom';
+import { Link, navigate, useNavigate } from 'react-router-dom';
 
 function Header(props) {
 
     const {setTotalHoldingsValue} = props;
+    const {holdingsData} = props;
+
+    const [gotHoldingData, setGotHoldingData] = useState(false);
 
     const [menuItemsdropdownOpen, setmenuItemsDropdownOpen] = useState(false);
     const menuItemsdropDownRef = useRef(null);
+    const navigate = useNavigate();
 
     useEffect(() => {
 
@@ -31,6 +35,18 @@ function Header(props) {
         };
     
     }, [menuItemsdropDownRef]);
+
+    useEffect(() => {
+
+        // console.log(holdingsData);
+        setGotHoldingData(true);
+      
+    }, [holdingsData]);
+    
+    function handleLoggedInHoldinsClick() {
+        navigate('/holdings-page', { state: {holdingsData: holdingsData} });
+    }
+
 
     function togglemenuItemsDropdown() {
         setmenuItemsDropdownOpen(!menuItemsdropdownOpen);
@@ -61,6 +77,15 @@ function Header(props) {
         setTotalHoldingsValue(0);
     }
 
+    function handleNotLoggedInClick() {
+
+        Swal.fire({
+            title: 'Must Log In!',
+            icon: 'error',
+            text: 'You must login inorder to access transactions',
+        });
+    }
+
     return (
         <div className='header_wrapper'>
             <div className='header_logo'>
@@ -79,12 +104,20 @@ function Header(props) {
                 <div className='menuItems_dropdown_content_portfolio_wrapper'>
                     <a href='#'>Portfolio</a>
                     <div className="menuItems_dropdown_content">
-                        {/* <a href="#">Cash</a> */}
                         {props.onShowLoggedIn ? (
-                            <a href="#"><Link to="/transaction-page">Transactions</Link></a>
+                            <Link to="/transaction-page">Transactions</Link>
                         ) : (
-                            <a href="#">Transactions</a>
+                            <a href="#" onClick={handleNotLoggedInClick}>Transactions</a>
                         )}
+
+                        {props.onShowLoggedIn ? (
+                            <a href="#" onClick={gotHoldingData ? handleLoggedInHoldinsClick : undefined}>
+                                Holdings
+                            </a>
+                        ) : (
+                            <a href="#" onClick={handleNotLoggedInClick}>Holdings</a>
+                        )}
+                        
                     </div>
                 </div>
                 <div className='menuItems_dropdown_content_account_wrapper'>

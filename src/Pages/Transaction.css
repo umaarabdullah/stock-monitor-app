@@ -1,13 +1,74 @@
 .transaction-page {
-    color: white;
-  }
-  
-  .transaction-page h1 {
-    color: white;
-  }
-  
-  .transaction-page th,
-  .transaction-page td {
-    color: white;
-  }
+  color: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.transaction_page_back_button{
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+.back_button {
+  color: white;
+  font-weight: bold;
+}
+
+.transaction_page_title {
+  margin-top: 20px;
+}
+
+.transaction-page h1 {
+  color: white;
+}
+
+.transaction_page_table {
+  width: 80%;
+  background: linear-gradient(45deg, #3a4163, #060d70);
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.transaction_page_table table {
+  width: 100%;
+  border-collapse: collapse;
+  overflow: hidden;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+}
+
+.transaction_page_table th,
+.transaction_page_table td {
+  padding: 15px;
+  background-color: rgba(185, 66, 66, 0.2);
+  text-align: left;
+  color: #fff;
+  white-space: nowrap;
+}
+
+.transaction_page_table thead th {
+  background-color: #55608f;
+}
+
+.transaction_page_table tbody tr:hover {
+  background-color: rgba(255, 255, 255, 0.3);
+}
+
+.transaction_page_table tbody td {
+  position: relative;
+}
+
+.transaction_page_table tbody td:hover:before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: -9999px;
+  bottom: -9999px;
+  background-color: rgba(255, 255, 255, 0.2);
+  z-index: -1;
+}
+
   

@@ -210,7 +210,7 @@ function StatsRow(props) {
               const currentDateAndTime = new Date();
               const formattedDateTime = currentDateAndTime.toLocaleString('en-US', options).replace('GMT', '');
               console.log(`Buy Transaction at ${formattedDateTime}`);
-              let transactionArray = [parseInt(num_shares_tmp), props.name, props.price, formattedDateTime, 'Bought'];
+              let transactionArray = [parseInt(num_shares_tmp), props.name, props.price, formattedDateTime, 'BUY'];
 
               // if previous transactions happened
               if (userData.hasOwnProperty('Transactions')) {
@@ -458,7 +458,7 @@ function StatsRow(props) {
                 const currentDateAndTime = new Date();
                 const formattedDateTime = currentDateAndTime.toLocaleString('en-US', options).replace('GMT', '');
                 console.log(`Sell Transaction at ${formattedDateTime}`);
-                let transactionArray = [parseInt(num_shares_tmp), props.name, props.price, formattedDateTime, 'Sold'];
+                let transactionArray = [parseInt(num_shares_tmp), props.name, props.price, formattedDateTime, 'SELL'];
 
                 // if previous transactions happened
                 if (userData.hasOwnProperty('Transactions')) {

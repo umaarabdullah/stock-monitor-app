@@ -11,20 +11,20 @@ import { useLocation } from 'react-router-dom';
 function Transaction() {
     
     const location = useLocation();
-    const history = useNavigate();
+    const navigate = useNavigate();
 
     const [transactionData, setTransactionData] = useState([]);
 
     useEffect(() => {
       
-        getTransactionData();
+      getTransactionData();
 
-    }, [])
+    }, []);
 
     useEffect(() => {
 
       console.log('TransactionData Triggered useEffect');
-      console.log(transactionData);
+      // console.log(transactionData);
       
     }, [transactionData]);
     
@@ -57,7 +57,7 @@ function Transaction() {
             if (userData.hasOwnProperty('Transactions')) {
 
                 console.log("Transaction.js: Transactions exists");
-                console.log(userData['Transactions']);
+                // console.log(userData['Transactions']);
                 let tempTransactionArray = userData['Transactions'];
                 // console.log(tempTransactionArray);
 
@@ -96,43 +96,51 @@ function Transaction() {
 
     function handleBackClick(event) {
       event.preventDefault();
-      history(-1);
+      navigate("/");
     }
 
     return (
       <div className="transaction-page">
-        <Link to="/" className="back-button" onClick={handleBackClick}>Back</Link>
-        <h1>Transaction Page</h1>
-        <table>
-          <thead>
-          <tr>
-              <th>Stock Trading</th>
-              <th>Share Count</th>
-              <th>Stock Name</th>
-              <th>Stock Price</th>
-              <th>Date & Time</th>
-              <th>Buy/Sell </th>
-          </tr>
-          </thead>
-          <tbody>
-            {transactionData.length > 0 ? (
-              transactionData.map((transaction, index) => (
-                <tr key={index}>
-                  <td>{index + 1}</td>
-                  <td>{transaction.shareCount}</td>
-                  <td>{transaction.stockName}</td>
-                  <td>{transaction.stockPrice}</td>
-                  <td style={{ paddingRight: '20px' }}>{transaction.dateTime.toString()}</td>
-                  <td>{transaction.buySellFlag}</td>
+        <div className='transaction_page_back_button'>
+          <button type='button' className='back_button' onClick={handleBackClick}>Back</button>
+        </div>
+        <div className='transaction_page_title'>
+          <h1>Transaction History</h1>
+        </div>
+        <div className='transaction_page_table'>
+          <table>
+            <thead>
+            <tr>
+                <th>S/No</th>
+                <th>Transaction Type</th>
+                <th>Shares</th>
+                <th>Stock Symbol</th>
+                <th>Date & Time</th>
+                <th>Cost per Share</th>
+                <th>Net Amount</th>
+            </tr>
+            </thead>
+            <tbody>
+              {transactionData.length > 0 ? (
+                transactionData.map((transaction, index) => (
+                  <tr key={index}>
+                    <td>{index + 1}</td>
+                    <td>{transaction.buySellFlag}</td>
+                    <td>{transaction.shareCount}</td>
+                    <td>{transaction.stockName}</td>
+                    <td style={{ paddingRight: '20px' }}> {transaction.dateTime.toString()} </td>
+                    <td>${Number(transaction.stockPrice).toFixed(2)}</td>
+                    <td> ${Number(transaction.stockPrice*transaction.shareCount).toFixed(2)} </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="6">No transaction data available.</td>
                 </tr>
-              ))
-            ) : (
-              <tr>
-                <td colSpan="6">No transaction data available.</td>
-              </tr>
-            )}
-          </tbody>
+              )}
+            </tbody>
         </table>
+        </div>
       </div>
     )
 }

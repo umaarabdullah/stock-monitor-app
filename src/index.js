@@ -9,6 +9,7 @@ import {
 } from "react-router-dom";
 import CashPage from './Pages/CashPage';
 import Transaction from './Pages/Transaction';
+import UserStockHoldings from './Pages/UserStockHoldings';
 
   const router = createBrowserRouter([
     {
@@ -22,6 +23,10 @@ import Transaction from './Pages/Transaction';
     {
       path: "/transaction-page",
       element: <Transaction />,
+    },
+    {
+      path: "/holdings-page",
+      element: <UserStockHoldings />,
     },
   ]);
 
