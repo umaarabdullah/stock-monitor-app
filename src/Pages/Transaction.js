@@ -105,7 +105,7 @@ function Transaction() {
           <button type='button' className='back_button' onClick={handleBackClick}>Back</button>
         </div>
         <div className='transaction_page_title'>
-          <h1>Transaction Page</h1>
+          <h1>Transaction History</h1>
         </div>
         <div className='transaction_page_table'>
           <table>

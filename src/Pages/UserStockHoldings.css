@@ -10,8 +10,22 @@ body {
 }
 
 .holdings_page_back_button {
-    padding-top: 40px;
-    padding-left: 40px;
+    margin-top: 40px;
+    margin-bottom: 40px;
+}
+
+.holdings-page {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.holdings-page h1 {
+    color: white;
+}
+
+.holdings_page_title {
+    margin-top: 40px;
 }
 
 .container {
@@ -23,10 +37,10 @@ body {
 }
 
 .container table {
-  width: auto;
-  border-collapse: collapse;
-  overflow: hidden;
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    width: auto;
+    border-collapse: collapse;
+    overflow: hidden;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
 }
 
 .container th,
