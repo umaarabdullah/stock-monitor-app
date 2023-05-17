@@ -74,34 +74,44 @@ function LoginPage(props) {
       console.log(errorCode, errorMessage);
     });
 
-    // Perform Signup
-    firebase.auth().createUserWithEmailAndPassword(email, password)
-    .then((userCredential) => {
-      const { user } = userCredential;
-      const userData = {
-        displayName: user.displayName,
-        email: user.email,
-        uid: user.uid
-      };
-      db.collection('users').doc(user.uid).set(userData)
-        .then(() => {
-          console.log('User document created successfully.');
-        })
-        .catch((error) => {
-          console.error('Error creating user document:', error);
-        });
-        
-        console.log(`${user.email} Signed up successfully`);
-        onHideLoginPage(); // Hide the login page after successful login
-        Swal.fire({   // Pop up Alert
-          title: 'Signed Up',
-          icon: 'success',
-          text: `Welcome ${user.email}`,
-        });
-    })
-    .catch((error) => {
-      console.error('Error signing up:', error);
+    // check if password is greater than 8 characters
+    if(password.length > 8){
+      // Perform Signup
+      firebase.auth().createUserWithEmailAndPassword(email, password)
+      .then((userCredential) => {
+        const { user } = userCredential;
+        const userData = {
+          displayName: user.displayName,
+          email: user.email,
+          uid: user.uid
+        };
+        db.collection('users').doc(user.uid).set(userData)
+          .then(() => {
+            console.log('User document created successfully.');
+          })
+          .catch((error) => {
+            console.error('Error creating user document:', error);
+          });
+          
+          console.log(`${user.email} Signed up successfully`);
+          onHideLoginPage(); // Hide the login page after successful login
+          Swal.fire({   // Pop up Alert
+            title: 'Signed Up',
+            icon: 'success',
+            text: `Welcome ${user.email}`,
+          });
+      })
+      .catch((error) => {
+        console.error('Error signing up:', error);
+      });
+    }
+   else{
+    Swal.fire({   // Pop up Alert
+      title: 'Password too short',
+      icon: 'warning',
+      text: 'Password must be greater than 8 characters',
     });
+   }
 
   }
 
