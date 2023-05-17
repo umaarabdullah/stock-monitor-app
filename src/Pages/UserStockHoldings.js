@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom';
 import './UserStockHoldings.css'
+import Chart from 'chart.js/auto';
 
 // View holdings
 function UserStockHoldings() {
@@ -11,19 +12,55 @@ function UserStockHoldings() {
 
     const [holdingsDataState, setHoldingsDataState] = useState([]);
 
+    const chartRef = useRef(null);
+
     useEffect(() => {
 
         if (holdingsData) {
-            console.log(holdingsData);
+            // console.log(holdingsData);
             setHoldingsDataState(holdingsData);
         }
 
     }, [holdingsData]);
 
+    useEffect(() => {
+
+        if (chartRef.current && holdingsDataState.length > 0) {
+            const labels = holdingsDataState.map((holdings) => holdings.name);
+            const data = holdingsDataState.map((holdings) => holdings.shares);
+            const backgroundColors = holdingsDataState.map((holdings) => getRandomColor());
+        
+                new Chart(chartRef.current, {
+                type: 'pie',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            data: data,
+                            backgroundColor: backgroundColors,
+                        },
+                    ],
+                },
+            });
+        }
+
+    }, [holdingsDataState]);
+
+
+    function getRandomColor() {
+        const letters = '0123456789ABCDEF';
+        let color = '#';
+        for (let i = 0; i < 6; i++) {
+            color += letters[Math.floor(Math.random() * 16)];
+        }
+        return color;
+    }
+      
     function handleBackClick(event) {
         event.preventDefault();
         navigate("/");
     }
+    
 
     return (
         <div className='holdings-page'>

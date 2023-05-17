@@ -38,7 +38,7 @@ function Header(props) {
 
     useEffect(() => {
 
-        console.log(holdingsData);
+        // console.log(holdingsData);
         setGotHoldingData(true);
       
     }, [holdingsData]);
