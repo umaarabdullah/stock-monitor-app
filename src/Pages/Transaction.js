@@ -19,7 +19,7 @@ function Transaction() {
       
       getTransactionData();
 
-    }, [])
+    }, []);
 
     useEffect(() => {
 
@@ -109,36 +109,36 @@ function Transaction() {
         </div>
         <div className='transaction_page_table'>
           <table>
-          <thead>
-          <tr>
-              <th>S/No</th>
-              <th>Transaction Type</th>
-              <th>Shares</th>
-              <th>Stock Name</th>
-              <th>Date & Time</th>
-              <th>Cost per Share</th>
-              <th>Net Amount</th>
-          </tr>
-          </thead>
-          <tbody>
-            {transactionData.length > 0 ? (
-              transactionData.map((transaction, index) => (
-                <tr key={index}>
-                  <td>{index + 1}</td>
-                  <td>{transaction.buySellFlag}</td>
-                  <td>{transaction.shareCount}</td>
-                  <td>{transaction.stockName}</td>
-                  <td style={{ paddingRight: '20px' }}> {transaction.dateTime.toString()} </td>
-                  <td>${Number(transaction.stockPrice).toFixed(2)}</td>
-                  <td> ${Number(transaction.stockPrice*transaction.shareCount).toFixed(2)} </td>
+            <thead>
+            <tr>
+                <th>S/No</th>
+                <th>Transaction Type</th>
+                <th>Shares</th>
+                <th>Stock Symbol</th>
+                <th>Date & Time</th>
+                <th>Cost per Share</th>
+                <th>Net Amount</th>
+            </tr>
+            </thead>
+            <tbody>
+              {transactionData.length > 0 ? (
+                transactionData.map((transaction, index) => (
+                  <tr key={index}>
+                    <td>{index + 1}</td>
+                    <td>{transaction.buySellFlag}</td>
+                    <td>{transaction.shareCount}</td>
+                    <td>{transaction.stockName}</td>
+                    <td style={{ paddingRight: '20px' }}> {transaction.dateTime.toString()} </td>
+                    <td>${Number(transaction.stockPrice).toFixed(2)}</td>
+                    <td> ${Number(transaction.stockPrice*transaction.shareCount).toFixed(2)} </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="6">No transaction data available.</td>
                 </tr>
-              ))
-            ) : (
-              <tr>
-                <td colSpan="6">No transaction data available.</td>
-              </tr>
-            )}
-          </tbody>
+              )}
+            </tbody>
         </table>
         </div>
       </div>

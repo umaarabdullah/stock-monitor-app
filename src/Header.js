@@ -6,14 +6,18 @@ import { makeStyles } from '@material-ui/core';
 import './Header.css' 
 import { Search } from '@material-ui/icons'
 import Swal from 'sweetalert2';
-import { Link, navigate } from 'react-router-dom';
+import { Link, navigate, useNavigate } from 'react-router-dom';
 
 function Header(props) {
 
     const {setTotalHoldingsValue} = props;
+    const {holdingsData} = props;
+
+    const [gotHoldingData, setGotHoldingData] = useState(false);
 
     const [menuItemsdropdownOpen, setmenuItemsDropdownOpen] = useState(false);
     const menuItemsdropDownRef = useRef(null);
+    const navigate = useNavigate();
 
     useEffect(() => {
 
@@ -31,6 +35,18 @@ function Header(props) {
         };
     
     }, [menuItemsdropDownRef]);
+
+    useEffect(() => {
+
+        console.log(holdingsData);
+        setGotHoldingData(true);
+      
+    }, [holdingsData]);
+    
+    function handleLoggedInHoldinsClick() {
+        navigate('/holdings-page', { state: {holdingsData: holdingsData} });
+    }
+
 
     function togglemenuItemsDropdown() {
         setmenuItemsDropdownOpen(!menuItemsdropdownOpen);
@@ -95,7 +111,9 @@ function Header(props) {
                         )}
 
                         {props.onShowLoggedIn ? (
-                            <Link to="/holdings-page">Holdings</Link>
+                            <a href="#" onClick={gotHoldingData ? handleLoggedInHoldinsClick : undefined}>
+                                Holdings
+                            </a>
                         ) : (
                             <a href="#" onClick={handleNotLoggedInClick}>Holdings</a>
                         )}

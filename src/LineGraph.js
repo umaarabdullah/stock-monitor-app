@@ -151,7 +151,7 @@ function LineGraph(props) {
       /* live means 2 days back live replay of stock behaviour data */
       const currentDate = new Date();
       const fewDaysBack = new Date(currentDate);
-      fewDaysBack.setDate(currentDate.getDate() - 3);
+      fewDaysBack.setDate(currentDate.getDate() - 1);
       const midnight = new Date(fewDaysBack.getFullYear(), fewDaysBack.getMonth(), fewDaysBack.getDate(), 0, 0, 0);   // Midnight date and timestamp from two days back
       const midnightTimestamp = Math.floor(midnight.getTime() / 1000);
       const currentTimestamp = Math.floor(fewDaysBack.getTime() / 1000);    // Current date and timestamp from two days back

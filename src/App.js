@@ -16,6 +16,7 @@ function App() {
   const [timeLineButtonActiveClick, setTimeLineButtonActiveClick] = useState("");
   const [TotalHoldingsValue, setTotalHoldingsValue] = useState(0.0);   // Initialize with 0.0
   const [TotalPurchasePrice, setTotalPurchasePrice] = useState(0.0);   // Initialize with 0.0
+  const [holdingsData, setHoldingsData] = useState([]);
   
   useEffect(() => {
     // this page refreshes everytime it is navigated here
@@ -53,6 +54,7 @@ function App() {
           onShowLoggedIn={loggedIn} 
           onLoggedOut={handleOnLoggedOut}
           setTotalHoldingsValue={setTotalHoldingsValue}
+          holdingsData={holdingsData}
         /> 
       </div>
       <div className='app_body'>
@@ -71,6 +73,7 @@ function App() {
             OnSetOnStockRowClick={setOnStockRowClick}
             setTotalHoldingsValue={setTotalHoldingsValue}
             setTotalPurchasePrice={setTotalPurchasePrice}
+            setHoldingsData={setHoldingsData}
           />
         </div>
       </div>

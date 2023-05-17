@@ -18,6 +18,7 @@ function Stats(props) {
   const {onSetGraphData} = props;
   const {setTotalHoldingsValue} = props;
   const {setTotalPurchasePrice} = props;
+  const {setHoldingsData} = props;
 
   const [stockData, setStockData] = useState([]);
   const [myStocks, setMyStocks] = useState([]);
@@ -71,6 +72,7 @@ function Stats(props) {
           /* Sort based on number of shares */
           userStockData.sort(function(a, b){return b.shares - a.shares});  // Sort data based on number of shares already purchased by the user
           setMyStocks(userStockData);
+          setHoldingsData(userStockData);   // props to be passed to userStockholdings page
 
           // calculate holdings value
           let TotalHoldingsValue = 0;
@@ -101,9 +103,6 @@ function Stats(props) {
     .catch((error) => {
       console.log("Error getting user document:", error);
     });
-
-    // console.log('myStocks');
-    // console.log(myStocks);
 
   };
 
