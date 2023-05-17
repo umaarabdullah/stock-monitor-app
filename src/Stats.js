@@ -54,7 +54,7 @@ function Stats(props) {
         userDataList.forEach((item) => {
           if(stocksList.includes(item.key)){
             // console.log("Match");
-            console.log(item.key, item.value);
+            // console.log(item.key, item.value);
             promises.push(getStockData(item.key)
             .then(res => {
               userStockData.push({

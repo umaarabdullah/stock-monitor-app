@@ -16,48 +16,11 @@ function App() {
   const [timeLineButtonActiveClick, setTimeLineButtonActiveClick] = useState("");
   const [TotalHoldingsValue, setTotalHoldingsValue] = useState(0.0);   // Initialize with 0.0
   const [TotalPurchasePrice, setTotalPurchasePrice] = useState(0.0);   // Initialize with 0.0
-
-  useEffect(() => {
-    console.log(`useEffect 1 App.js: loggedIn: ${loggedIn}`);
-    // Save the relevant state data in localStorage
-    localStorage.setItem(
-      'appState',
-      JSON.stringify({
-        showLoginPage,
-        loggedIn,
-        graphData,
-        onStockRowClick,
-        timeLineButtonActiveClick,
-        TotalHoldingsValue,
-        TotalPurchasePrice
-      })
-    );
-  }, [showLoginPage, loggedIn, graphData, onStockRowClick, timeLineButtonActiveClick, TotalHoldingsValue, TotalPurchasePrice]);
   
   useEffect(() => {
-    // Retrieve the relevant state data from localStorage when the component mounts
-    const storedState = localStorage.getItem('appState');
-    if (storedState) {
-      const {
-        showLoginPage,
-        loggedIn,
-        graphData,
-        onStockRowClick,
-        timeLineButtonActiveClick,
-        TotalHoldingsValue,
-        TotalPurchasePrice
-      } = JSON.parse(storedState);
-      setShowLoginPage(showLoginPage);
-      setloggedIn(loggedIn);
-      setGraphData(graphData);
-      setOnStockRowClick(onStockRowClick);
-      setTimeLineButtonActiveClick(timeLineButtonActiveClick);
-      setTotalHoldingsValue(TotalHoldingsValue);
-      setTotalPurchasePrice(TotalPurchasePrice);
-      console.log(`useEffect 2 App.js: loggedIn: ${loggedIn}`);
-    }
-  }, []);
-  
+    // this page refreshes everytime it is navigated here
+    console.log(`loggedIn: ${loggedIn}`);
+  }, [loggedIn])
   
 
   function handleShowLoginPage() {

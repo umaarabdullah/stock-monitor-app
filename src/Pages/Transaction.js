@@ -11,20 +11,20 @@ import { useLocation } from 'react-router-dom';
 function Transaction() {
     
     const location = useLocation();
-    const history = useNavigate();
+    const navigate = useNavigate();
 
     const [transactionData, setTransactionData] = useState([]);
 
     useEffect(() => {
       
-        getTransactionData();
+      getTransactionData();
 
     }, [])
 
     useEffect(() => {
 
       console.log('TransactionData Triggered useEffect');
-      console.log(transactionData);
+      // console.log(transactionData);
       
     }, [transactionData]);
     
@@ -57,7 +57,7 @@ function Transaction() {
             if (userData.hasOwnProperty('Transactions')) {
 
                 console.log("Transaction.js: Transactions exists");
-                console.log(userData['Transactions']);
+                // console.log(userData['Transactions']);
                 let tempTransactionArray = userData['Transactions'];
                 // console.log(tempTransactionArray);
 
@@ -96,13 +96,13 @@ function Transaction() {
 
     function handleBackClick(event) {
       event.preventDefault();
-      history(-1);
+      navigate("/");
     }
 
     return (
       <div className="transaction-page">
         <div className='transaction_page_back_button'>
-          <Link to="/" className="back_button" onClick={handleBackClick}>Back</Link>
+          <button type='button' className='back_button' onClick={handleBackClick}>Back</button>
         </div>
         <div className='transaction_page_title'>
           <h1>Transaction Page</h1>
