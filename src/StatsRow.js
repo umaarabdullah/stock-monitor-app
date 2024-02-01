@@ -567,7 +567,9 @@ function StatsRow(props) {
     }
   }
   async function handleRowClick() {
-    getGraphData('D');   // API Call to fetch stock candle data by Resolution:Day 
+    /* Had to comment this line out as graphData -> (getHistoricalStockData()) resulted in error
+    as finnhub has made stock candle data PREMIUM */
+    // getGraphData('D');   // API Call to fetch stock candle data by Resolution:Day 
   }
 
   return (
